@@ -1,9 +1,38 @@
 /*Santiago Rodríguez - Manuel De Armas - Obligatorio programacion 1 2018 - CSS*/
 
-#mainDiv{
-    margin-top: 40px; 
-    margin-left:20px;
+#mainDiv{    
+    margin-top: 20px; 
+    margin-left: 20px;
     margin-right: 20px;
-    margin-bottom: 40px;
+    margin-bottom: 20px;
 }
 
+/*
+table, th, td {
+    border: 1px solid black;
+    border-collapse: collapse;
+}
+*/
+
+.offerFullSize{
+    border: 1px solid black;
+    border-collapse: collapse;
+    width: 50%;
+}
+
+.offerFullSizePicture{
+    display: block;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+.offerFullSizeInfo{
+    margin-left: auto;
+    margin-right: auto;
+}
+
+.offerFullSizeButtons{
+    text-align: center;
+    margin-left: auto;
+    margin-right: auto;
+}
