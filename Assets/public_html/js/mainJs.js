@@ -4,6 +4,7 @@ $(document).ready(inicialSetUp);
 var ofertas = new Array();
 
 function inicialSetUp() {
-
-    mostrarOfertasPrecargadas();
+    construirYAgregarUsuariosPreCargados();
+    construirUsuarioParaNavegacion();
+    updateDisplay();
 }
