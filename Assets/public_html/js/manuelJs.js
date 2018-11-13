@@ -28,8 +28,6 @@ function construirUsuarioParaNavegacion() {
     };
 }
 
-
-
 function updateDisplay() {
     switch (userNav.currentMode) {
         case "login":
@@ -167,25 +165,68 @@ function logOutClicked() {
     updateDisplay();
 }
 
+
+
+// ======================
+// SOLICITUDES DE USUARIO
+// vvvvvvvvvvvvvvvvvvvvvv
+
 function construirSolicitudesDeUsuario() {
     console.log("Administrador trata de ver solicitudes de usuario");
     var htmlBody = "";
     htmlBody += "<h1>Solicitudes De Usuario</h1>";
     
     htmlBody += "<table><tr><th>Nombre</th><th>Apellido</th><th>Email</th><th>Fecha de nacimiento</th><th>Estado</th><th>Aprobar</th><th>Rechazar</th></tr>";
-    //htmlBody += "<table><tr><th>Nombre</th><th>Apellido</th><th>Email</th><th>Fecha de nacimiento</th></tr>";
-    var botonAprobar = "<button>Aprobar</button>";
-    var botonRechazar = "<button>Rechazar</button>";
+    var botonAprobar = "";
+    var botonRechazar = "";
     var htmlTableCells = "";
-    //el for empieza en 1 para evitar mostrar el usuario admin
-    for (var i = 1; i < usuariosPreCargados.length; i++){
+    for (var i = 0; i < usuariosPreCargados.length; i++){
+        botonAprobar = crearBotonAprobar(i);
+        botonRechazar = crearBotonRechazar(i);
         htmlTableCells += "<tr><td>"+usuariosPreCargados[i].name+"</td><td>"+usuariosPreCargados[i].lastName+"</td><td>"+usuariosPreCargados[i].email+"</td><td>"+usuariosPreCargados[i].dateOfBirth.toDateString()+"</td><td>"+ usuariosPreCargados[i].status+"</td><td>"+botonAprobar+"</td><td>"+botonRechazar+"</td></tr>";
-        //htmlTableCells += "<tr><td>"+usuariosPreCargados[i].name+"</td><td>"+usuariosPreCargados[i].lastName+"</td><td>"+usuariosPreCargados[i].email+"</td><td>"+usuariosPreCargados[i].dateOfBirth.toDateString()+"</td></tr>";
     }
     htmlBody = htmlBody +  htmlTableCells + "</table>";
     
     $("#mainDiv").html(htmlBody);
+    
+    
+    //asigno los botones de aprobar y rechazar
+    for (var x = 0; x < usuariosPreCargados.length; x++){
+        var botonAprobarId = "#aprobarBtn_" + x;
+        var botonRechazarId = "#rechazarBtn_" + x;
+        $(botonAprobarId).click({param1: x}, clickBotonAprobar);
+        $(botonRechazarId).click({param1: x}, clickBotonRechazar);        
+    }
 }
+
+function crearBotonAprobar(pIndex){
+    var buttonId = "aprobarBtn_" + pIndex;
+    var htmlButton = '<button id="'+buttonId+'">Aprobar</button>';
+    return htmlButton;
+}
+function crearBotonRechazar(pIndex){
+    var buttonId = "rechazarBtn_" + pIndex;
+    var htmlButton = '<button id="'+buttonId+'">Rechazar</button>';
+    return htmlButton;
+}
+
+function clickBotonAprobar(event){
+    var posEnElArray = event.data.param1;
+    console.log("Usuario hace click en aprobar a un objeto de la lista de usuarios en la posicion " + posEnElArray);
+    usuariosPreCargados[posEnElArray].status = "habilitado";
+    updateDisplay();
+}
+
+function clickBotonRechazar(event){
+    var posEnElArray = event.data.param1;
+    console.log("Usuario hace click en rechazar a un objeto de la lista de usuarios en la posicion " + posEnElArray);
+    usuariosPreCargados[posEnElArray].status = "rechazado";
+    updateDisplay();
+}
+
+// ^^^^^^^^^^^^^^^^^^^^^^
+// SOLICITUDES DE USUARIO
+// ======================
 
 function construirLogIn() {
     var htmlBody = "";
@@ -209,8 +250,6 @@ function logInAdmin() {
     userNav.type = "admin";
     updateDisplay();
 }
-
-
 
 
 function mostrarOfertasPrecargadas() {
