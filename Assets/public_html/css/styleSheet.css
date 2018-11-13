@@ -123,12 +123,25 @@ body {
 
 
 
+#navbar{
+    /*margin-top: 20px;*/
+    margin-left: 20px;
+    margin-right: 20px;
+    overflow: hidden;
+    background-color: white;
+    position: fixed; /* Set the navbar to fixed position */
+    top: 0; /* Position the navbar at the top of the page */
+    width: 100%; /* Full width */
+}
+
+
 #mainDiv{    
     margin-top: 20px; 
     margin-left: 20px;
     margin-right: 20px;
     margin-bottom: 20px;
 }
+
 
 /*
 table, th, td {
@@ -137,9 +150,13 @@ table, th, td {
 }
 */
 
+
+
 .offerFullSize{
+    
     border: 1px solid black;
     border-collapse: collapse;
+    
     width: 50%;
 }
 
@@ -159,3 +176,4 @@ table, th, td {
     margin-left: auto;
     margin-right: auto;
 }
+
