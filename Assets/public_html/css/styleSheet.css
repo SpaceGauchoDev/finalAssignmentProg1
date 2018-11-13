@@ -1,4 +1,127 @@
 /*Santiago Rodríguez - Manuel De Armas - Obligatorio programacion 1 2018 - CSS*/
+@charset "utf-8";
+/* CSS Document */
+
+.clearfix:after {
+  visibility: hidden;
+  display: block;
+  font-size: 0;
+  content: " ";
+  clear: both;
+  height: 0;
+}
+
+.clearfix {
+  display: inline-block;
+}
+/* start commented backslash hack \*/
+
+* html .clearfix {
+  height: 1%;
+}
+
+.clearfix {
+  display: block;
+}
+/* close commented backslash hack */
+
+body {
+  font-family: Cambria, "Hoefler Text", "Liberation Serif", Times, "Times New Roman", serif;
+  
+}
+
+#navPrincipal li, body{
+  background-color: #58983A;
+}
+#aux a{
+  color:#333;
+}
+
+
+#contenedor {
+  width: 960px;
+  background-color: #FFF;
+  margin: 0 auto;
+}
+
+#logo {
+  margin: 20px;
+  float: left;
+}
+
+#aux{
+  float:right;
+  clear:right;
+  padding:0 24px 10px 0;
+}
+
+#navPrincipal a{
+  color:#FCFCFC;
+  cursor:pointer;
+}
+
+#aux a{
+  text-decoration:underline;
+  cursor:pointer;
+}
+
+#navPrincipal {
+  float: right;
+  margin-top: 35px;
+  margin-right:20px;
+  max-width:750px;
+}
+
+#navPrincipal li {
+  list-style-type: none;
+  padding: 10px;
+  border: 1px solid #6B6B6B;
+  margin: 5px;
+  float: left;
+  font-family: Constantia, "Lucida Bright", "DejaVu Serif", Georgia, serif;
+}
+
+#cabezal {
+  background-color: #B2DE9D;
+}
+
+#contenido {
+  /*background-color: #DFDFDF;*/
+  width: 100%;
+  padding:20px;
+  float: left;
+
+}
+
+#top5 {
+    background-color: #EFEFEF;
+    width: 100%;
+    height: 200px;
+    text-align: center;
+    padding: 4px;
+}
+
+
+
+#top5 ul {
+    list-style-type: none;
+    margin: 0;
+    padding: 0;
+    overflow: hidden;
+    background-color: #333333;
+}
+
+#top5 ul li {
+    float: left;
+}
+
+#pie {
+  background-color: #B2DE9D;
+  clear: both;
+  padding:20px;
+}
+
+
 
 #mainDiv{    
     margin-top: 20px; 
