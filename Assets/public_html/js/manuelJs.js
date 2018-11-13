@@ -265,12 +265,7 @@ function mostrarOfertasPrecargadas() {
 }
 
 
-<<<<<<< HEAD
-function buildHtmlOfferFullSize(pOferta){
-	console.log(pOferta);
-=======
 function buildHtmlOfferFullSize(pOferta) {
->>>>>>> d9a016bd1969cbad32c552ad7484def3a3498b7f
     //la oferta es una tabla de 1 fila con 3 columnas 
     //en la columna 1 se mostrará la imagen asociada a la oferta
     //en la columna 2 hay una tabla anidada con 5 filas y 1 columna, se agrega en cada sub fila la informacion de texto 
