@@ -73,10 +73,6 @@ function isValidEmailFormat(pString) {
     return result;
 }
 
-
-
-
-
 function myTrim(pStr) {
     // myTrim(var) elimina espacios vacíos antes y después de un string no vacío
     // ej1: ""          --> ""

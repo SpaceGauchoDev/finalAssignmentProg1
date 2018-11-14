@@ -1,5 +1,4 @@
-var ofertasPreCargadas = new Array();
-var usuariosPreCargados = new Array();
+
 
 function construirYAgregarOfertasPreCargadas() {
     var _startDate = new Date();
