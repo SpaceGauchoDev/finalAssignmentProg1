@@ -25,13 +25,57 @@ function isSpanishLanguageLetter(pStr) {
         var enieMin = 241;
 
         var code = pStr.charCodeAt(0);
-        
+
         if ((code >= minStart && code <= minEnd) || code === enieMin) {
             result = true;
         }
     }
     return result;
 }
+
+
+function notEmptyString(pString) {
+    var result = false;
+    pString = myTrim(pString);
+    if (pString !== "") {
+        result = true;
+    }
+    return result;
+}
+
+
+function isValidEmailFormat(pString) {
+    var result = true;
+    // emails validos no pueden contener espacios y deben contener un solo @
+    pString = myTrim(pString);
+    pString = pString.toLowerCase();
+
+    for (var i = 0; i < pString.length; i++) {
+        if (pString.charCodeAt(i) === 32) {
+            // email contiene espacios
+            result = false;
+        }
+    }
+
+    var cont = 0;
+    for (var x = 0; x < pString.length; x++) {
+        if (pString.charCodeAt(x) === 64) {
+            // @ encontrado
+            cont++;
+        }
+    }
+
+    if(cont !== 1){
+        // numero incorrecto de @
+        result = false;
+    }
+
+    return result;
+}
+
+
+
+
 
 function myTrim(pStr) {
     // myTrim(var) elimina espacios vacíos antes y después de un string no vacío

@@ -5,11 +5,8 @@ function construirYAgregarOfertasPreCargadas() {
     var _startDate = new Date();
     var _endDate = new Date();
     var _addedDate = new Date();
-    //var newId = 0;
 
-    //newId = nuevoIdUnico(ofertasPreCargadas);
     var oferta1 = {
-        //id: newId, // id único generado para cada oferta
         id: nuevoIdUnico(ofertasPreCargadas), // id único generado para cada oferta
         featured: -1, // -1 no esta destacado, numero positivo el orden en la lista de destacados       
         active: false, // verdadero la oferta está visible en la página actualmente
@@ -25,10 +22,8 @@ function construirYAgregarOfertasPreCargadas() {
         addedDate: _addedDate}; // fecha en que la oferta fue agregada a la lista de ofertas, para ordenamiento de ofertas no destacadas
 
 
-    //newId = nuevoIdUnico(ofertasPreCargadas);
     var oferta2 = {
-        //id: newId, // id único generado para cada oferta
-        id: nuevoIdUnico(ofertasPreCargadas), // id único generado para cada oferta
+        id: nuevoIdUnico(ofertasPreCargadas),
         featured: -1,
         active: false,
         timesBooked: 0,
@@ -42,10 +37,8 @@ function construirYAgregarOfertasPreCargadas() {
         endDate: _endDate,
         addedDate: _addedDate};
     
-    //newId = nuevoIdUnico(ofertasPreCargadas);
     var oferta3 = {
-        //id: newId, // id único generado para cada oferta
-        id: nuevoIdUnico(ofertasPreCargadas), // id único generado para cada oferta
+        id: nuevoIdUnico(ofertasPreCargadas),
         featured: -1,
         active: false,
         timesBooked: 0,
@@ -59,10 +52,8 @@ function construirYAgregarOfertasPreCargadas() {
         endDate: _endDate,
         addedDate: _addedDate};
     
-    //newId = nuevoIdUnico(ofertasPreCargadas);
     var oferta4 = {
-        //id: newId, // id único generado para cada oferta
-        id: nuevoIdUnico(ofertasPreCargadas), // id único generado para cada oferta
+        id: nuevoIdUnico(ofertasPreCargadas),
         featured: -1,
         active: false,
         timesBooked: 0,
@@ -84,10 +75,8 @@ function construirYAgregarUsuariosPreCargados() {
     var _dateOfBirth = new Date();
     var _favorited = new Array();
     
-    //var newId1 = nuevoIdUnico(usuariosPreCargados);
     var usuario1 = {
-        //id: newId1, // id unico generado para cada usuario
-        id: nuevoIdUnico(usuariosPreCargados),
+        id: nuevoIdUnico(usuariosPreCargados), //id unico generado para cada usuario
         type: "admin", // tipo de usuario puede ser "admin", "regUser" 
         status: "habilitado", // rechazado, pendiente, habilitado
         name: "Sebastián", // nombre que el usuario ingresa
@@ -97,49 +86,54 @@ function construirYAgregarUsuariosPreCargados() {
         password: "1111", // contraseña que el usuario ingresa
         favorited: _favorited}; // array con los id's de las ofertas que el usuario ha marcado como favoritas
     
-    //var newId2 = nuevoIdUnico(usuariosPreCargados);
     var usuario2 = {
-        //id: newId2, // id unico generado para cada usuario
         id: nuevoIdUnico(usuariosPreCargados),
-        type: "regUser", // tipo de usuario puede ser "admin", "regUser" 
-        status: "pendiente", // rechazado, pendiente, habilitado
-        name: "Diego", // nombre que el usuario ingresa
-        lastName: "Gómez", // apellido que el usuario ingresa
-        email: "DiegoGomez@proveedorDeEmail.com", // email que el usuario ingresa
-        dateOfBirth: _dateOfBirth, // fecha de nacimiento que el usuario ingresa
-        password: "2222", // contraseña que el usuario ingresa
-        favorited: _favorited}; // array con los id's de las ofertas que el usuario ha marcado como favoritas
+        type: "regUser",
+        status: "pendiente",
+        name: "Diego",
+        lastName: "Gómez",
+        email: "DiegoGomez@proveedorDeEmail.com",
+        dateOfBirth: _dateOfBirth,
+        password: "2222",
+        favorited: _favorited};
     
     
-    //var newId3 = nuevoIdUnico(usuariosPreCargados);
     var usuario3 = {
-        //id: newId3, // id unico generado para cada usuario
         id: nuevoIdUnico(usuariosPreCargados),
-        type: "regUser", // tipo de usuario puede ser "admin", "regUser" 
-        status: "rechazado", // rechazado, pendiente, habilitado
-        name: "Gabriel", // nombre que el usuario ingresa
-        lastName: "Sosa", // apellido que el usuario ingresa
-        email: "GabrielSosa@proveedorDeEmail.com", // email que el usuario ingresa
-        dateOfBirth: _dateOfBirth, // fecha de nacimiento que el usuario ingresa
-        password: "2222", // contraseña que el usuario ingresa
-        favorited: _favorited}; // array con los id's de las ofertas que el usuario ha marcado como favoritas
+        type: "regUser",
+        status: "rechazado",
+        name: "Gabriel",
+        lastName: "Sosa",
+        email: "GabrielSosa@proveedorDeEmail.com",
+        dateOfBirth: _dateOfBirth,
+        password: "2222",
+        favorited: _favorited};
     
     
-    //var newId4 = nuevoIdUnico(usuariosPreCargados);
     var usuario4 = {
-        //id: newId4, // id unico generado para cada usuario
         id: nuevoIdUnico(usuariosPreCargados),
-        type: "regUser", // tipo de usuario puede ser "admin", "regUser" 
-        status: "habilitado", // rechazado, pendiente, habilitado
-        name: "Mariana", // nombre que el usuario ingresa
-        lastName: "Romero", // apellido que el usuario ingresa
-        email: "MarianaRomero@proveedorDeEmail.com", // email que el usuario ingresa
-        dateOfBirth: _dateOfBirth, // fecha de nacimiento que el usuario ingresa
-        password: "2222", // contraseña que el usuario ingresa
-        favorited: _favorited}; // array con los id's de las ofertas que el usuario ha marcado como favoritas
+        type: "regUser",
+        status: "habilitado",
+        name: "Mariana",
+        lastName: "Romero",
+        email: "MarianaRomero@proveedorDeEmail.com",
+        dateOfBirth: _dateOfBirth,
+        password: "2222",
+        favorited: _favorited};
+    
+    var usuario5 = {
+        id: nuevoIdUnico(usuariosPreCargados),
+        type: "admin",
+        status: "habilitado",
+        name: "Mariana",
+        lastName: "Romero",
+        email: "m@",
+        dateOfBirth: _dateOfBirth,
+        password: "1234",
+        favorited: _favorited};
     
 
-    usuariosPreCargados.push(usuario1, usuario2, usuario3, usuario4);
+    usuariosPreCargados.push(usuario1, usuario2, usuario3, usuario4, usuario5);
 
 }
 
