@@ -4,19 +4,24 @@ $(document).ready(inicialSetUp);
 var ofertas;
 var ofertasPreCargadas;
 var usuariosPreCargados;
+var reservasPreCargadas;
 var userNav;
 
 function inicialSetUp() {
     ofertas = new Array();
     ofertasPreCargadas = new Array();
     usuariosPreCargados = new Array();
+    reservasPreCargadas = new Array();
     userNav = new Array();
-    
+
     construirYAgregarUsuariosPreCargados();
     construirYAgregarOfertasPreCargadas();
+    construirYAgregarReservasPreCargadas(65); // el parametro es la probabilidad de reserva que tiene cada usuario pre cargado
     mostrarTop5();
     construirUsuarioParaNavegacion();
     updateDisplay();
+
+    //randomStartEndDates(15);
 }
 
 
@@ -117,10 +122,10 @@ function construirNavBar() {
         asignarBotones("logInModeBtn");
     }
     asignarBotones("homeBtn");
-    
-    
-    
-    
+
+
+
+
 }
 
 function asignarBotones(pString) {
@@ -140,8 +145,8 @@ function asignarBotones(pString) {
         case "homeBtn":
             $("#homeBtn").click(homeClicked);
             break;
-            
-            
+
+
 
         default:
             console.log("pString en asignarBotones incorrecto");
@@ -438,9 +443,9 @@ function registerClicked() {
         } else {
             msgE = "Email inválido, las direcciones de email no pueden contener espacios y tienen que tener al menos un @, intente nuevamente.";
         }
-    }else{
-         msgE = "Email inválido, no puede estar vacío, intente nuevamente.";
-    }    
+    } else {
+        msgE = "Email inválido, no puede estar vacío, intente nuevamente.";
+    }
 
 
     // verificamos que la fecha de nacimiento no sea vacia
@@ -451,7 +456,7 @@ function registerClicked() {
     } else {
         msgD = "Fecha de nacimiento inválida, la fecha de nacimiento no puede estar vacía, intente nuevamente.";
     }
-    
+
     // verificamos que la contrasena no sea vacia
     inputPass = myTrim(inputPass);
     if (notEmptyString(inputPass)) {
@@ -476,8 +481,8 @@ function registerClicked() {
     $("#registerParagraphFecha").html(msgD);
     $("#registerParagraphContraseña").html(msgP);
     $("#registerParagraphContraseñaRep").html(msgPr);
-    
-    if(validationSuccess === 6){
+
+    if (validationSuccess === 6) {
         console.log("New user registration validated");
 
         var _dateOfBirth = new Date();
@@ -493,10 +498,10 @@ function registerClicked() {
             dateOfBirth: _dateOfBirth,
             password: inputPass,
             favorited: _favorited};
-        
+
         usuariosPreCargados.push(usuario1);
-        
-    }   
+
+    }
 }
 // ^^^^^^^^^^^^^^^^^^^^^^
 // REGISTER
@@ -504,11 +509,11 @@ function registerClicked() {
 
 function mostrarOfertasPrecargadas() {
     /*
-    //si es la primera vez que se muestra la pagina de ofertas, hay que cargar el array
-    if (ofertasPreCargadas.length === 0) {
-        construirYAgregarOfertasPreCargadas();
-    }
-    */
+     //si es la primera vez que se muestra la pagina de ofertas, hay que cargar el array
+     if (ofertasPreCargadas.length === 0) {
+     construirYAgregarOfertasPreCargadas();
+     }
+     */
     var allOffers = "";
     for (var i = 0; i < ofertasPreCargadas.length; i++) {
         allOffers += buildHtmlOfferFullSize(ofertasPreCargadas[i]) + "<p></p>";
@@ -527,11 +532,12 @@ function buildHtmlOfferFullSize(pOferta) {
 
     var displayName = pOferta.displayName;
     var displayLocation = pOferta.geoLocation;
-    var displayDate = "Fecha oferta";
-    var displayPrice = "$" + pOferta.priceDollars;
+    var displayDateStart = "Fecha inicio: " + pOferta.startDate.toDateString();
+    var displayDateEnd = "Fecha fin: " + pOferta.endDate.toDateString();
+    var displayPrice = "Precio por noche:" + pOferta.perNightPrice;
     var displayType = pOferta.housingType;
 
-    var col_2 = '<table class="offerFullSizeInfo" width="200"><tr><td>' + displayName + "</td></tr><tr><td>" + displayLocation + "</td></tr><tr><td>" + displayDate + "</td></tr><tr><td>" + displayPrice + "</td></tr><tr><td>" + displayType + "</td></tr></table>";
+    var col_2 = '<table class="offerFullSizeInfo" width="200"><tr><td>' + displayName + "</td></tr><tr><td>" + displayLocation + "</td></tr><tr><td>" + displayDateStart + "</td></tr><tr><td>" + displayDateEnd + "</td></tr><tr><td>" + displayPrice + "</td></tr><tr><td>" + displayType + "</td></tr></table>";
 
     var resButton = "<button>Reserva</button>";
     var favButton = "<button>Marcar Favorito</button>";
