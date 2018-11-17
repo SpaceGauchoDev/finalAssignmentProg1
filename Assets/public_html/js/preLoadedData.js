@@ -118,7 +118,7 @@ function construirYAgregarUsuariosPreCargados() {
     
     var usuario5 = {
         id: nuevoIdUnico(usuariosPreCargados),
-        type: "admin",
+        type: "regUser",
         status: "habilitado",
         name: "Mariana",
         lastName: "Romero",

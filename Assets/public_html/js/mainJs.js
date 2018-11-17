@@ -546,8 +546,8 @@ function buildHtmlOfferFullSize(pOferta) {
     if(userNav.type === "noReg" || userNav.type === "regUser"){
         var offerId = pOferta.id;
         // se agrega el id de oferta como parametro data-offerId al boton reserva y al boton favorito de cada oferta
-        resButton = '<button onclick="reservaClicked(this)" data-offerId="'+offerId+'">Reserva</button>';
-        favButton = '<button onclick="favoritoClicked(this)" data-offerId="'+offerId+'">Marcar Favorito</button>';
+        resButton = '<button onclick="reservaClicked(this)" data-offerid="'+offerId+'">Reserva</button>';
+        favButton = '<button onclick="favoritoClicked(this)" data-offerid="'+offerId+'">Marcar Favorito</button>';
     }
 
     var col_3 = '<table class="offerFullSizeButtons" width="200"><tr><td>' + resButton + "</td></tr><tr><td>" + favButton + "</td></tr></table>";

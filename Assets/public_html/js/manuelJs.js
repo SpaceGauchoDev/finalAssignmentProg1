@@ -17,15 +17,15 @@
  }
  */
 
-function reservaClicked(reservaBtn) {
+function reservaClicked(reservaBtn) {    
+    var offerId = reservaBtn.getAttribute("data-offerid");
     console.log("usuario clickeo en reservar: " + offerId);
-    var offerId = reservaBtn.getAttribute("data-offerId");
 
 }
 
-function favoritoClicked(favoritoBtn) {
+function favoritoClicked(favoritoBtn) {    
+    var offerId = favoritoBtn.getAttribute("data-offerid");
     console.log("usuario clickeo favoritear oferta: " + offerId);
-    var offerId = favoritoBtn.getAttribute("data-offerId");
     // si usuario es tipo noReg, mandar a pagina de login
     if (userNav.type === "noReg") {
         logInModeClicked();
