@@ -537,14 +537,22 @@ function buildHtmlOfferFullSize(pOferta) {
     var displayPrice = "Precio por noche:" + pOferta.perNightPrice;
     var displayType = pOferta.housingType;
 
+
     var col_2 = '<table class="offerFullSizeInfo" width="200"><tr><td>' + displayName + "</td></tr><tr><td>" + displayLocation + "</td></tr><tr><td>" + displayDateStart + "</td></tr><tr><td>" + displayDateEnd + "</td></tr><tr><td>" + displayPrice + "</td></tr><tr><td>" + displayType + "</td></tr></table>";
+    
+    //si el usuatio es admin, no construir los botones de reserva y favorito
+    var resButton = "";
+    var favButton = "";
+    if(userNav.type === "noReg" || userNav.type === "regUser"){
+        var offerId = pOferta.id;
+        // se agrega el id de oferta como parametro data-offerId al boton reserva y al boton favorito de cada oferta
+        resButton = '<button onclick="reservaClicked(this)" data-offerId="'+offerId+'">Reserva</button>';
+        favButton = '<button onclick="favoritoClicked(this)" data-offerId="'+offerId+'">Marcar Favorito</button>';
+    }
 
-    var resButton = "<button>Reserva</button>";
-    var favButton = "<button>Marcar Favorito</button>";
     var col_3 = '<table class="offerFullSizeButtons" width="200"><tr><td>' + resButton + "</td></tr><tr><td>" + favButton + "</td></tr></table>";
-
     var offerFullSize = "<div><table class='offerFullSize'><tr><td>" + col_1 + "</td><td>" + col_2 + "</td><td>" + col_3 + "</td></tr></table></div>";
 
-    //$("#mainDiv").html(completeTable);
     return offerFullSize;
 }
+
