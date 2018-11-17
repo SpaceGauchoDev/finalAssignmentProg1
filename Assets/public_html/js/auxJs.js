@@ -43,6 +43,28 @@ function notEmptyString(pString) {
     return result;
 }
 
+function getArrayIndexFromId(pId, pArray){
+    var found = false;
+    var index = 0;
+    
+    //pId = myTrim(pId);
+    pId = parseInt(pId);
+    
+    while(index < pArray.length && found === false){
+        if(pArray[index].id === pId){
+            found = true;
+        }else{
+            index++;
+        }
+    }
+    
+    if(found === false){
+        index = -1;
+    }
+    
+    return index;
+}
+
 
 function isValidEmailFormat(pString) {
     var result = true;
@@ -160,6 +182,25 @@ function myRemoveSpacesAndPunctuation(pStr) {
     }
     return result;
 }
+
+
+function invertirString(pString){
+    var result = "";
+    
+    for(var i = pString.length; i>0; i--){
+        result += pString.charAt(i);
+
+    }
+    return result;
+}
+
+
+function fechaFormatoDiaMesAnioConBarras(pDate){
+    var result = pDate.getUTCDay() + "/" + pDate.getUTCMonth() + "/" +  pDate.getUTCFullYear();
+    return result;
+}
+
+
 
 
 function myRemoveAccentsLowerCase(pStr) {

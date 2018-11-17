@@ -118,7 +118,7 @@ function construirYAgregarUsuariosPreCargados() {
     
     var usuario5 = {
         id: nuevoIdUnico(usuariosPreCargados),
-        type: "regUser",
+        type: "admin",
         status: "habilitado",
         name: "Mariana",
         lastName: "Romero",
@@ -155,14 +155,14 @@ function construirYAgregarReservasPreCargadas(pChanceDeReserva) {
                 var endDate_ = randomDateBetweenTwoDates(startDate_, ofertasPreCargadas[j].endDate);
                 
                 var numbersOfNights = Math.round((endDate_-startDate_)/(1000*60*60*24));
-                var totalPrice_ = numbersOfNights * ofertasPreCargadas[j].priceDollars;
+                var totalPrice_ = numbersOfNights * ofertasPreCargadas[j].perNightPrice;
                 
                 
                 // 5- se genera un nuevo objeto reserva
                 var reserva = {
                   id: nuevoIdUnico(reservasPreCargadas),
                   userId: usuariosPreCargados[i].id,
-                  ofertaId: ofertasPreCargadas[j].id,
+                  offerId: ofertasPreCargadas[j].id,
                   totalPrice: totalPrice_, // resultado de la cantidad de noches por el precio por noche de la oferta
                   startDate: startDate_, // debe ser mayor o igual a la fecha minima de disponibilidad de la oferta y menor que la fecha maxima de disponibilidad de la oferta
                   endDate: endDate_, // debe ser mayor que startDate y menor o igual a la fecha maxima de disponibilidad de la oferta
@@ -233,12 +233,10 @@ function desaprobadaPendienteAprobada(){
 
 function decideReservar(pPorcentaje){
     var result = false;
-    // si el valor recibido no es valido se ajusta a un 50/50
-    if(pPorcentaje > 100 || pPorcentaje<=0){
-        pPorcentaje = 50;
-    }
-    if (Math.random() * 100 <= pPorcentaje) {
+    if(pPorcentaje !== -1){
+        if (Math.random() * 100 <= pPorcentaje) {
         result = true;
+        }
     }
     return result;
 }

@@ -16,14 +16,12 @@ function inicialSetUp() {
 
     construirYAgregarUsuariosPreCargados();
     construirYAgregarOfertasPreCargadas();
-    construirYAgregarReservasPreCargadas(65); // el parametro es la probabilidad de reserva que tiene cada usuario pre cargado
+    construirYAgregarReservasPreCargadas(65); // el parametro es la probabilidad de reserva que tiene cada usuario pre cargado, -1 para ninguna reserva autogenerada
     mostrarTop5();
     construirUsuarioParaNavegacion();
     updateDisplay();
-
     //randomStartEndDates(15);
 }
-
 
 function construirUsuarioParaNavegacion() {
     userNav = {
@@ -69,6 +67,8 @@ function updateDisplay() {
             break;
         case "reservasAdmin":
             console.log("display: reservasAdmin");
+            construirNavBar();
+            construirReservasAdminMode();
             break;
         case "stats":
             console.log("display: stats");
@@ -76,7 +76,101 @@ function updateDisplay() {
         default :
             console.log("currentMode para updateDisplay incorrecto");
     }
+
+
+    $(".accordionDiv").accordion({
+        collapsible: true,
+        active: false
+    });
+
+    $(".inputDate").datepicker({
+        dateFormat: 'dd/mm/yy'
+    });
+    
+    restringirFechasSeleccionables();    
 }
+
+// ======================================
+// CONFIGURACION DE jQuery-UI datepickers
+// vvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvv
+
+function restringirFechasSeleccionables(){
+    // itero a traves de todos los elementos de la clase .inputDate
+    $(".inputDate").each(
+        function() {
+            //obtengo el id del input de fecha, un string de formato resDateInicio_#### o resDateFin_####
+            var dateInputId = $(this).attr("id");
+            var offerId =  getOfferIdFromDateInputId(dateInputId);
+            var minDate = getOfferStartDate(offerId);
+            var maxDate = getOfferEndDate(offerId);
+            var currentSelector = "#" + dateInputId;
+            
+            $(currentSelector).datepicker( "option", "minDate", minDate );
+            $(currentSelector).datepicker( "option", "maxDate", maxDate );
+            
+        }
+    );
+}
+
+
+
+function getOfferIdFromDateInputId(pDateInputId){
+    var result = "";
+    var dashFound = false;
+    var x = 0;
+    while (dashFound === false && x < pDateInputId.length){
+        if(pDateInputId.charAt(x) === "_"){
+            dashFound = true;
+        }else{
+            x++;
+        } 
+    }
+    
+    for (var i = x+1; i<pDateInputId.length; i++){
+       result += pDateInputId.charAt(i);
+    }
+    
+    result = parseInt(result);
+
+    return result;
+}
+
+function getOfferStartDate(pIdOferta){
+    //console.log(pIdOferta);
+    var result = "error";
+    var offerFound = false;
+    var x = 0;
+    while (offerFound === false && x <ofertasPreCargadas.length ){
+        if(ofertasPreCargadas[x].id === pIdOferta){
+            offerFound = true;
+            result = ofertasPreCargadas[x].startDate;
+        }
+        x++;
+    }
+    return result;
+}
+
+function getOfferEndDate(pIdOferta){
+    //console.log(pIdOferta);
+    var result = "error";
+    var offerFound = false;
+    var x = 0;
+    while (offerFound === false && x <ofertasPreCargadas.length ){
+        if(ofertasPreCargadas[x].id === pIdOferta){
+            offerFound = true;
+            result = ofertasPreCargadas[x].endDate;
+        }
+        x++;
+    }
+    return result;
+}
+
+
+// ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+// CONFIGURACION DE jQuery-UI datepickers
+// ======================================
+
+
 
 // Esta funcion construye y muestra todo el contenido de la nav bar
 function construirNavBar() {
@@ -225,6 +319,64 @@ function clickBotonRechazar(event) {
 // SOLICITUDES DE USUARIO
 // ======================
 
+
+// ======================
+// RESERVAS ADMIN MODE
+// vvvvvvvvvvvvvvvvvvvvvv
+
+function construirReservasAdminMode() {
+    console.log("Administrador trata de ver solicitudes de reserva");
+    var htmlBody = "";
+    htmlBody += "<h1>Solicitudes De Reserva</h1>";
+
+    htmlBody += "<table><tr><th>Email</th><th>userId</th><th>Nombre de oferta</th><th>offerId</th><th>Estado</th><th>Aprobar</th><th>Rechazar</th></tr>";
+    var botonAprobar = "";
+    var botonRechazar = "";
+    var htmlTableCells = "";
+    for (var i = 0; i < reservasPreCargadas.length; i++) {
+        var userEmail = usuariosPreCargados[getArrayIndexFromId(reservasPreCargadas[i].userId, usuariosPreCargados)].email;
+        var offerDisplayName = ofertasPreCargadas[getArrayIndexFromId(reservasPreCargadas[i].offerId, ofertasPreCargadas)].displayName;
+        
+        botonAprobar = '<button onclick="aprobarReservaClicked(this)" data-reserveid="' + reservasPreCargadas[i].id + '">Aprobar</button>';
+        botonRechazar = '<button onclick="rechazarReservaClicked(this)" data-reserveid="' + reservasPreCargadas[i].id + '">Rechazar</button>';
+        htmlTableCells += "<tr><td>" + userEmail + "</td><td>" + reservasPreCargadas[i].userId + "</td><td>" + offerDisplayName + "</td><td>" + reservasPreCargadas[i].offerId + "</td><td>" + reservasPreCargadas[i].status + "</td><td>" + botonAprobar + "</td><td>" + botonRechazar + "</td></tr>";
+    }
+    htmlBody = htmlBody + htmlTableCells + "</table>";
+
+    $("#mainDiv").html(htmlBody);
+}
+
+function aprobarReservaClicked(aprobarBtn) {
+    var reserveId = parseInt(aprobarBtn.getAttribute("data-reserveid"));
+    console.log("usuario administrador clickeo aprobar reserva: " + reserveId);
+    
+    var i = getArrayIndexFromId(reserveId, reservasPreCargadas);
+    reservasPreCargadas[i].status = "aprobada"; 
+    
+    updateDisplay();
+}
+
+function rechazarReservaClicked(rechazarBtn) {
+    var reserveId = parseInt(rechazarBtn.getAttribute("data-reserveid"));
+    console.log("usuario administrador clickeo aprobar reserva: " + reserveId);
+    
+    var i = getArrayIndexFromId(reserveId, reservasPreCargadas);
+    reservasPreCargadas[i].status = "desaprobada"; 
+    
+    updateDisplay();
+}
+
+
+
+
+
+// ^^^^^^^^^^^^^^^^^^^^^^
+// RESERVAS ADMIN MODE
+// ======================
+
+
+
+
 // ======================
 // LOG IN / OUT
 // vvvvvvvvvvvvvvvvvvvvvv
@@ -264,9 +416,9 @@ function construirLogInMode() {
     htmlCeldaRegister += '<p id="registerParagraphEmail"></p>';
     htmlCeldaRegister += '<label>Fecha De Nacimiento: </label><input id="dateOfBirthRegisterField" type="text"/>' + "<br>";
     htmlCeldaRegister += '<p id="registerParagraphFecha"></p>';
-    htmlCeldaRegister += '<label>Contraseña: </label><input id="passwordRegisterField" type="text"/>' + "<br>";
+    htmlCeldaRegister += '<label>Contraseña: </label><input id="passwordRegisterField" type="password"/>' + "<br>";
     htmlCeldaRegister += '<p id="registerParagraphContraseña"></p>';
-    htmlCeldaRegister += '<label>Repetir Contraseña: </label><input id="passwordCheckRegisterField" type="text"/>' + "<br>";
+    htmlCeldaRegister += '<label>Repetir Contraseña: </label><input id="passwordCheckRegisterField" type="password"/>' + "<br>";
     htmlCeldaRegister += '<p id="registerParagraphContraseñaRep"></p>';
 
 
@@ -482,6 +634,7 @@ function registerClicked() {
     $("#registerParagraphContraseña").html(msgP);
     $("#registerParagraphContraseñaRep").html(msgPr);
 
+    // usuario logra registrarse exitosamente en modo pendiente, se lo lleva a la pagina de inicio
     if (validationSuccess === 6) {
         console.log("New user registration validated");
 
@@ -500,12 +653,15 @@ function registerClicked() {
             favorited: _favorited};
 
         usuariosPreCargados.push(usuario1);
-
+        
+            userNav.currentMode = "ofertas";
+            updateDisplay();
     }
 }
 // ^^^^^^^^^^^^^^^^^^^^^^
 // REGISTER
 // ======================
+
 
 function mostrarOfertasPrecargadas() {
     /*
@@ -539,20 +695,41 @@ function buildHtmlOfferFullSize(pOferta) {
 
 
     var col_2 = '<table class="offerFullSizeInfo" width="200"><tr><td>' + displayName + "</td></tr><tr><td>" + displayLocation + "</td></tr><tr><td>" + displayDateStart + "</td></tr><tr><td>" + displayDateEnd + "</td></tr><tr><td>" + displayPrice + "</td></tr><tr><td>" + displayType + "</td></tr></table>";
-    
+
     //si el usuatio es admin, no construir los botones de reserva y favorito
     var resButton = "";
     var favButton = "";
-    if(userNav.type === "noReg" || userNav.type === "regUser"){
+    var reservaAcordeon = "";
+    if (userNav.type === "noReg" || userNav.type === "regUser") {
         var offerId = pOferta.id;
         // se agrega el id de oferta como parametro data-offerId al boton reserva y al boton favorito de cada oferta
-        resButton = '<button onclick="reservaClicked(this)" data-offerid="'+offerId+'">Reserva</button>';
-        favButton = '<button onclick="favoritoClicked(this)" data-offerid="'+offerId+'">Marcar Favorito</button>';
+        
+        
+        
+        var idResDateInicio = "resDateInicio_" + offerId;
+        //var valueDateInicioOferta = fechaFormatoDiaMesAnioConBarras(pOferta.startDate);
+        var labelDe = "<label>Desde:</label>";
+        var inputResInicio = '<input id="'+ idResDateInicio +'"type="text" class="inputDate" placeholder="fecha de inicio"/>';
+        var labelHasta = "<label>Hasta:</label>";
+        var idResDateFin = "resDateFin_" + offerId;
+        //var valueDateFinOferta = fechaFormatoDiaMesAnioConBarras(pOferta.endDate);
+        var inputResFin = '<input id="'+idResDateFin+'"type="text" class="inputDate" placeholder="fecha de fin"/>';
+        resButton = '<button onclick="reservaClicked(this)" data-offerid="' + offerId + '">Reserva</button>';
+        var idResP = "paragraphReserva_" + offerId;
+        var paragraphReserva = '<p id="'+idResP+'"></p>';
+        var reservaAcordeon = '<div class="accordionDiv"><h3>Reservar</h3><div>' + labelDe +inputResInicio +  labelHasta + inputResFin + resButton + paragraphReserva + '</div></div>';
+        
+        favButton = '<button onclick="favoritoClicked(this)" data-offerid="' + offerId + '">Marcar Favorito</button>';
     }
 
-    var col_3 = '<table class="offerFullSizeButtons" width="200"><tr><td>' + resButton + "</td></tr><tr><td>" + favButton + "</td></tr></table>";
-    var offerFullSize = "<div><table class='offerFullSize'><tr><td>" + col_1 + "</td><td>" + col_2 + "</td><td>" + col_3 + "</td></tr></table></div>";
+    //var col_3 = '<table class="offerFullSizeButtons" width="200"><tr><td>' + resButton + "</td></tr><tr><td>" + favButton + "</td></tr></table>";
+    var col_3 = '<table class="offerFullSizeButtons" width="200"><tr><td>' + reservaAcordeon + "</td></tr><tr><td>" + favButton + "</td></tr></table>";
+
+    var offerFullSize = "<div class='oferta'><table class='offerFullSize'><tr><td>" + col_1 + "</td><td>" + col_2 + "</td><td>" + col_3 + "</td></tr></table></div>";
 
     return offerFullSize;
 }
+
+
+
 
