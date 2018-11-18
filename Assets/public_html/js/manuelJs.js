@@ -49,26 +49,26 @@ function reservaClicked(reservaBtn) {
 function agregarReserva(pUserId, pOfferId, pStartDate, pEndDate) {
     //buscamos el index pos de la oferta para obtener el precio por noche y aumentar el contador de reservas
     /*
-    var offerFound = false;
-    var x = 0;
-
-    while (offerFound === false && x < ofertasPreCargadas.length) {
-        if (ofertasPreCargadas[x].id === pOfferId) {
-            offerFound = true;
-        } else {
-            x++;
-        }
-    }
-    */
+     var offerFound = false;
+     var x = 0;
+     
+     while (offerFound === false && x < ofertasPreCargadas.length) {
+     if (ofertasPreCargadas[x].id === pOfferId) {
+     offerFound = true;
+     } else {
+     x++;
+     }
+     }
+     */
     var offerIndex = getArrayIndexFromId(pOfferId, ofertasPreCargadas);
-    
+
     ofertasPreCargadas[offerIndex].timesBooked = ofertasPreCargadas[offerIndex].timesBooked++;
 
 
     //obtenemos el numero de días que dura la reserva
     var numbersOfNights = Math.round((pEndDate - pStartDate) / (1000 * 60 * 60 * 24));
     console.log("index pos" + offerIndex);
-    
+
     //obtenemos el precio total como producto de los dias de reserva por el precio por dia
     var totalPrice_ = numbersOfNights * ofertasPreCargadas[offerIndex].perNightPrice;
 
@@ -149,3 +149,144 @@ function addToUserFavoritesList(pUserId, pOfferId) {
         console.log("Error, user not found at addToUserFavoritesList");
     }
 }
+
+
+//===================
+// EDITAR OFERTAS
+//VVVVVVVVVVVVVVVVVVV
+function construirEditarOfertas() {
+    var divModeSelect = "";
+    var divInputData = "";
+    var divDisplayWorkingOffer = "";
+    var divInputDataButtons = "";
+    var divInstructions = "";
+    divDisplayWorkingOffer += '<div id="workingOffer">' + construirTemplateDeOferta() + '</div>';
+
+    
+    var tableInputData ="";
+    
+    divInputData += '<div id="inputData"><form id="newOfferInputForm"><fieldset>';
+    divInputData += '<legend>Datos: </legend>';
+    divInputData += '<div><label for="offerDisplayName">Nombre de la oferta</label><input id="offerDisplayName" name="offerDisplayName" title=""></div>';
+    divInputData += '<div><label for="firstname">Ubicación geográfica</label><input id="offerGeoLocation" name="offerGeoLocation" title=""></div>';
+    divInputData += '<div><label for="firstname">Fecha de inicio de oferta</label><input id="offerStartDate" name="offerStartDate" title=""></div>';
+    divInputData += '<div><label for="firstname">Fecha de fin de oferta</label><input id="offerEndDate" name="offerEndDate" title=""></div>';
+    divInputData += '<div><label for="firstname">Precio por noche</label><input id="offerPricePerNight" name="offerPricePerNight" title=""></div>';
+    
+    var selectTipoDeHospedaje = "";  
+    selectTipoDeHospedaje += '<select id="selectTipoDeHospedaje">'; // puede ser Hotel, Hostel, Casa, Apartamento
+    selectTipoDeHospedaje += '<option value="Hotel">Hotel</option>';
+    selectTipoDeHospedaje += '<option value="Hostel">Hostel</option>';
+    selectTipoDeHospedaje += '<option value="Casa">Casa</option>';
+    selectTipoDeHospedaje += '<option value="Apartamento">Apartamento</option>';
+    selectTipoDeHospedaje += '</select>';      
+    
+    divInputData += '<div><label for="selectTipoDeHospedaje">Tipo de hospedaje</label>'+ selectTipoDeHospedaje +'</div>';
+    divInputData += '</fieldset></form></div>';
+    
+    divInputDataButtons += '<div id="inputDataButtons" class="widget"><fieldset>';
+    divInputDataButtons += '<legend>Control: </legend>';
+    divInputDataButtons += '<div><label for="checkbox-1">Destacada</label><input type="checkbox" name="checkbox-1" id="checkbox-1"></div>';
+    divInputDataButtons += '<div><label for="checkbox-2">Habilitada</label><input type="checkbox" name="checkbox-2" id="checkbox-2"></div>';
+    divInputDataButtons += '<div><button onclick="cargarDatosClicked()">Cargar datos</button></div>';
+    divInputDataButtons += '<div><button onclick="aplicarDatosClicked()">Aplicar datos</button></div>';
+    divInputDataButtons += '</fieldset>';
+    divInputDataButtons += '</div>';
+    
+    divInstructions += '<div id="inputDataExplanation" class="widget"><fieldset>';
+    divInstructions += '<legend>Instrucciones: </legend>';
+    divInstructions += '<div><p>1 - Seleccionar modo, <b>Crear oferta</b> o <b>Editar oferta</b>.</p></div>';
+    divInstructions += '<div><p>2 - Ingresar información en los campos de la sección <b>Datos</b>.</p></div>';
+    divInstructions += '<div><p>3 - Indicar si la oferta es <b>Destacada</b>.</p></div>';
+    divInstructions += '<div><p>4 - Indicar si la oferta está <b>Habilitada</b>, ofertas no habilitadas no se cargarán en la página.</p></div>';
+    divInstructions += '<div><p>5 - <b>Cargar datos</b>, actualiza la oferta como está definida actualmente en modo previsualización.</p></div>';
+    divInstructions += '<div><p>6 - <b>Aplicar datos</b>, agrega los datos a la base de datos de la página haciendo efectivos los cambios.</p></div>';
+    divInstructions += '</fieldset>';
+    divInstructions += '</div>';   
+    
+    
+    
+   
+    tableInputData = "<table><tr><td>" + divInstructions  + "</td><td>" + divInputData  + "</td><td>" +  divInputDataButtons + "</td></tr></table>";
+    
+    
+    
+/*    
+<form>
+  <fieldset>
+    <div>
+      <label for="firstname">Firstname</label>
+      <input id="firstname" name="firstname" title="Please provide your firstname.">
+    </div>
+    <div>
+      <label for="lastname">Lastname</label>
+      <input id="lastname" name="lastname" title="Please provide also your lastname.">
+    </div>
+    <div>
+      <label for="address">Address</label>
+      <input id="address" name="address" title="Your home or work address.">
+    </div>
+  </fieldset>
+</form>
+*/
+ 
+ 
+/*
+<h2>Checkbox</h2>
+  <fieldset>
+    <legend>Hotel Ratings: </legend>
+    <label for="checkbox-1">2 Star</label>
+    <input type="checkbox" name="checkbox-1" id="checkbox-1">
+    <label for="checkbox-2">3 Star</label>
+    <input type="checkbox" name="checkbox-2" id="checkbox-2">
+    <label for="checkbox-3">4 Star</label>
+    <input type="checkbox" name="checkbox-3" id="checkbox-3">
+    <label for="checkbox-4">5 Star</label>
+    <input type="checkbox" name="checkbox-4" id="checkbox-4">
+  </fieldset>
+*/
+
+    $("#mainDiv").html(divModeSelect + tableInputData + divDisplayWorkingOffer);
+    $("input[type='checkbox']").checkboxradio();
+    $( ".widget button" ).button();
+}
+
+
+function construirTemplateDeOferta(){
+    var result = "";
+    var addedDate_ = new Date();
+
+    var oferta = {
+        id: nuevoIdUnico(ofertasPreCargadas),
+        featured: -1,
+        active: false,
+        timesBooked: 0,
+        displayName: "",
+        geoLocation: "",
+        imageUrl: "media/pictures/00-noImage.jpg",
+        housingType: "Hotel",
+        perNightPrice: 0,
+        startDate: addedDate_,
+        endDate: addedDate_,     
+        addedDate: addedDate_
+    };
+
+    result = buildHtmlOfferFullSize(oferta);
+    return result;
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+// ^^^^^^^^^^^^^^^^^^
+// EDITAR OFERTAS
+//===================
