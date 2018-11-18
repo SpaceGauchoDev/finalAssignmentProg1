@@ -6,12 +6,12 @@ function construirYAgregarOfertasPreCargadas() {
     var oferta1 = {
         id: nuevoIdUnico(ofertasPreCargadas), // id único generado para cada oferta
         featured: -1, // -1 no esta destacado, numero positivo el orden en la lista de destacados       
-        active: false, // verdadero la oferta está visible en la página actualmente
+        active: true, // verdadero la oferta está visible en la página actualmente
         timesBooked: 0, // cantidad de veces reservada
         displayName: "Balmoral Plaza", // nombre del hospedaje u oferta
         geoLocation: "Plaza Cagancha 1126", // direccion geografica de el hospedaje
         imageUrl: "media/pictures/01-Balmoral_Plaza-Plaza_Cagancha-1126.jpeg", // url de la imagen relativa al proyecto
-        housingType: "Hotel", // puede ser hotel, hostel, casa, apartamento
+        housingType: "Hotel", // puede ser Hotel, Hostel, Casa, Apartamento
         perNightPrice: 10, // el precio por noche, por defecto se muestra en dolares
         startDate: startEndAddedDates1[0], // fecha de inicio del periodo valido cuando se puede reservar para obtener el beneficio de la oferta
         endDate: startEndAddedDates1[1], // fecha de fin del periodo valido cuando se puede reservar para obtener el beneficio de la oferta                
@@ -21,7 +21,7 @@ function construirYAgregarOfertasPreCargadas() {
     var oferta2 = {
         id: nuevoIdUnico(ofertasPreCargadas),
         featured: -1,
-        active: false,
+        active: true,
         timesBooked: 0,
         displayName: "Alvear Hotel",
         geoLocation: "Yi 1372",
@@ -36,7 +36,7 @@ function construirYAgregarOfertasPreCargadas() {
     var oferta3 = {
         id: nuevoIdUnico(ofertasPreCargadas),
         featured: -1,
-        active: false,
+        active: true,
         timesBooked: 0,
         displayName: "Belmont House",
         geoLocation: "Avenida Rivera 6512",
@@ -51,7 +51,7 @@ function construirYAgregarOfertasPreCargadas() {
     var oferta4 = {
         id: nuevoIdUnico(ofertasPreCargadas),
         featured: -1,
-        active: false,
+        active: true,
         timesBooked: 0,
         displayName: "Dazzler Montevideo",
         geoLocation: "21 De Setiembre 2752",
@@ -117,62 +117,77 @@ function construirYAgregarUsuariosPreCargados() {
         favorited: _favorited};
     
     var usuario5 = {
-        id: nuevoIdUnico(usuariosPreCargados),
+        id: 1,
         type: "admin",
         status: "habilitado",
-        name: "Mariana",
-        lastName: "Romero",
-        email: "m@",
+        name: "testAdminName",
+        lastName: "testAdminLastName",
+        email: "a@",
         dateOfBirth: _dateOfBirth,
         password: "1234",
         favorited: _favorited};
     
-    usuariosPreCargados.push(usuario1, usuario2, usuario3, usuario4, usuario5);
+    var usuario6 = {
+        id: 2,
+        type: "regUser",
+        status: "habilitado",
+        name: "testRegUserName",
+        lastName: "testRegUserLastName",
+        email: "r@",
+        dateOfBirth: _dateOfBirth,
+        password: "1234",
+        favorited: _favorited};
+    
+    
+    usuariosPreCargados.push(usuario1, usuario2, usuario3, usuario4, usuario5, usuario6);
 }
 
-    // modo de generacion de reservas: 
+    // modo de autogeneracion de reservas: 
     // 1- recorremos el array de usuarios pre-cargados 
-    // 2- para cada usuario recorremos el array de ofertas pre-cargadas
-    // 3- para cada oferta el usuario "decide" basado en un numero random si reserva la oferta o no
-    // 4- si reserva la oferta, lo hace por un numero de dias aleatorio con piso en 1 y maximo en el numero de días maximo que dura la oferta
-    // 5- se genera un nuevo objeto reserva con todos los datos que se desprenden de la informacion hasta este punto
-    // 6- si no reserva la oferta, pasa a evaluar la siguiente, hasta recorrer todo el array de ofertas
+    // 2- si el usuario es admin, lo salteamos
+    // 3- para cada usuario recorremos el array de ofertas pre-cargadas
+    // 4- para cada oferta el usuario "decide" basado en un numero random si reserva la oferta o no
+    // 5- si reserva la oferta, lo hace por un numero de dias aleatorio con piso en 1 y maximo en el numero de días maximo que dura la oferta
+    // 6- se genera un nuevo objeto reserva con todos los datos que se desprenden de la informacion hasta este punto
+    // 7- si no reserva la oferta, pasa a evaluar la siguiente, hasta recorrer todo el array de ofertas
 function construirYAgregarReservasPreCargadas(pChanceDeReserva) {
     // 1- recorremos el array de usuarios pre-cargados 
-    for (var i = 0; i < usuariosPreCargados.length; i++){ 
-        // 2- para cada usuario recorremos el array de ofertas pre-cargadas
-        for(var j = 0; j< ofertasPreCargadas.length; j++){
-            // 3- el usuario "decide" basado en un numero random  si reserva la oferta o no
-            // en este caso tiene pChanceDeReserva% de probabilidad de reservar
-            if(decideReservar(pChanceDeReserva)){              
-                //4- si reserva la oferta, lo hace por un numero de dias aleatorio con piso en 1 y maximo en el numero de días maximo que dura la oferta
-                var newStatus = desaprobadaPendienteAprobada();                     
-                if(newStatus === "aprobada"){
-                    ofertasPreCargadas[j].timesBooked = ofertasPreCargadas[j].timesBooked +1;
+    for (var i = 0; i < usuariosPreCargados.length; i++){
+        // 2- si el usuario es admin, lo salteamos
+        if(usuariosPreCargados[i].type !== "admin"){
+           // 3- para cada usuario recorremos el array de ofertas pre-cargadas
+          for(var j = 0; j< ofertasPreCargadas.length; j++){
+              // 4- el usuario "decide" basado en un numero random  si reserva la oferta o no
+              // en este caso tiene pChanceDeReserva% de probabilidad de reservar
+              if(decideReservar(pChanceDeReserva)){              
+                  // 5- si reserva la oferta, lo hace por un numero de dias aleatorio con piso en 1 y maximo en el numero de días maximo que dura la oferta
+                  var newStatus = desaprobadaPendienteAprobada();                     
+                  if(newStatus === "aprobada"){
+                      ofertasPreCargadas[j].timesBooked = ofertasPreCargadas[j].timesBooked +1;
+                  }
+
+                  var startDate_ = randomDateBetweenTwoDates(ofertasPreCargadas[j].startDate, ofertasPreCargadas[j].endDate);
+                  var endDate_ = randomDateBetweenTwoDates(startDate_, ofertasPreCargadas[j].endDate);
+
+                  var numbersOfNights = Math.round((endDate_-startDate_)/(1000*60*60*24));
+                  var totalPrice_ = numbersOfNights * ofertasPreCargadas[j].perNightPrice;
+
+
+                  // 6- se genera un nuevo objeto reserva
+                  var reserva = {
+                    id: nuevoIdUnico(reservasPreCargadas),
+                    userId: usuariosPreCargados[i].id,
+                    offerId: ofertasPreCargadas[j].id,
+                    totalPrice: totalPrice_, // resultado de la cantidad de noches por el precio por noche de la oferta
+                    startDate: startDate_, // debe ser mayor o igual a la fecha minima de disponibilidad de la oferta y menor que la fecha maxima de disponibilidad de la oferta
+                    endDate: endDate_, // debe ser mayor que startDate y menor o igual a la fecha maxima de disponibilidad de la oferta
+                    status: newStatus // desaprobada, pendiente, aprobada
+                };
+                //console.log("Nombre: " + ofertasPreCargadas[j].displayName + " Ini res: " + startDate_.toDateString() + " Fin res: " + endDate_.toDateString());
+                reservasPreCargadas.push(reserva);              
                 }
-                
-                var startDate_ = randomDateBetweenTwoDates(ofertasPreCargadas[j].startDate, ofertasPreCargadas[j].endDate);
-                var endDate_ = randomDateBetweenTwoDates(startDate_, ofertasPreCargadas[j].endDate);
-                
-                var numbersOfNights = Math.round((endDate_-startDate_)/(1000*60*60*24));
-                var totalPrice_ = numbersOfNights * ofertasPreCargadas[j].perNightPrice;
-                
-                
-                // 5- se genera un nuevo objeto reserva
-                var reserva = {
-                  id: nuevoIdUnico(reservasPreCargadas),
-                  userId: usuariosPreCargados[i].id,
-                  offerId: ofertasPreCargadas[j].id,
-                  totalPrice: totalPrice_, // resultado de la cantidad de noches por el precio por noche de la oferta
-                  startDate: startDate_, // debe ser mayor o igual a la fecha minima de disponibilidad de la oferta y menor que la fecha maxima de disponibilidad de la oferta
-                  endDate: endDate_, // debe ser mayor que startDate y menor o igual a la fecha maxima de disponibilidad de la oferta
-                  status: newStatus // desaprobada, pendiente, aprobada
-              };
-              //console.log("Nombre: " + ofertasPreCargadas[j].displayName + " Ini res: " + startDate_.toDateString() + " Fin res: " + endDate_.toDateString());
-              reservasPreCargadas.push(reserva);              
-            }
-            
-        // 6- si no reserva la oferta, pasa a evaluar la siguiente
+            // 7- si no reserva la oferta, pasa a evaluar la siguiente
+            }          
         }
     }
 }

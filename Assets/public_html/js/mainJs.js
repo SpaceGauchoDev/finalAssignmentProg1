@@ -18,19 +18,38 @@ function inicialSetUp() {
     construirYAgregarOfertasPreCargadas();
     construirYAgregarReservasPreCargadas(65); // el parametro es la probabilidad de reserva que tiene cada usuario pre cargado, -1 para ninguna reserva autogenerada
     mostrarTop5();
-    construirUsuarioParaNavegacion();
+    construirUsuarioParaNavegacion(0,""); //0 default, 1 admin, 2 regUser
     updateDisplay();
-    //randomStartEndDates(15);
 }
 
-function construirUsuarioParaNavegacion() {
-    userNav = {
-        type: "noReg", // puede ser: "noReg", "regUser", "admin"
-        currentMode: "ofertas", // para regUser puede ser: "ofertas", "favoritos", "estadoDeCuenta", "reservasReg", "administracion"
-        // para admin puede ser: "ofertas", "editarOfertas", "solicitudesUsuario", "reservasAdmin", "stats", "administracion"
-        // para noReg puede ser: "ofertas", "login"
-        id: -1 // -1 es el id de usuarios no registrados
-    };
+function construirUsuarioParaNavegacion(pSetting, pMode) {
+    switch (pSetting) {
+        case 0:
+            // for live version
+            userNav = {
+                type: "noReg", // puede ser: "noReg", "regUser", "admin"
+                currentMode: "ofertas", // para regUser puede ser: "ofertas", "favoritos", "estadoDeCuenta", "reservasReg", "administracion"
+                // para admin puede ser: "ofertas", "editarOfertas", "solicitudesUsuario", "reservasAdmin", "stats", "administracion"
+                // para noReg puede ser: "ofertas", "login"
+                id: -1 // -1 es el id de usuarios no registrados
+            };
+            break;
+        case 1:
+            // for testing purposes
+            userNav = {
+                type: "admin",
+                currentMode: pMode,
+                id: 1 };
+            break;
+        case 2:
+            // for testing purposes
+            userNav = {
+                type: "regUser",
+                currentMode: pMode,
+                id: 2 };
+            break;            
+        default : console.log("Wrong switch input at construirUsuarioParaNavegacion"); 
+    }
 }
 
 function updateDisplay() {
@@ -59,6 +78,8 @@ function updateDisplay() {
             break;
         case "editarOfertas":
             console.log("display: editarOfertas");
+            construirNavBar();
+            construirEditarOfertas();
             break;
         case "solicitudesUsuario":
             console.log("display: solicitudesUsuario");
@@ -412,16 +433,14 @@ function construirLogInMode() {
     htmlCeldaRegister += '<p id="registerParagraphName"></p>';
     htmlCeldaRegister += '<label>Apellido: </label><input id="lastNameRegisterField" type="text"/>' + "<br>";
     htmlCeldaRegister += '<p id="registerParagraphLastName"></p>';
+    htmlCeldaRegister += '<label>Fecha De Nacimiento: </label><input id="dateOfBirthRegisterField" type="text"/>' + "<br>";
+    htmlCeldaRegister += '<p id="registerParagraphFecha"></p>';    
     htmlCeldaRegister += '<label>Email: </label><input id="emailRegisterField" type="text"/>' + "<br>";
     htmlCeldaRegister += '<p id="registerParagraphEmail"></p>';
-    htmlCeldaRegister += '<label>Fecha De Nacimiento: </label><input id="dateOfBirthRegisterField" type="text"/>' + "<br>";
-    htmlCeldaRegister += '<p id="registerParagraphFecha"></p>';
     htmlCeldaRegister += '<label>Contraseña: </label><input id="passwordRegisterField" type="password"/>' + "<br>";
     htmlCeldaRegister += '<p id="registerParagraphContraseña"></p>';
     htmlCeldaRegister += '<label>Repetir Contraseña: </label><input id="passwordCheckRegisterField" type="password"/>' + "<br>";
     htmlCeldaRegister += '<p id="registerParagraphContraseñaRep"></p>';
-
-
     htmlCeldaRegister += '<button id="registerBtn">Registrarse</button>';
 
     htmlBody += "<table><tr><th>Ingresar</th><th>Registrarse</th></th>";
@@ -672,7 +691,9 @@ function mostrarOfertasPrecargadas() {
      */
     var allOffers = "";
     for (var i = 0; i < ofertasPreCargadas.length; i++) {
-        allOffers += buildHtmlOfferFullSize(ofertasPreCargadas[i]) + "<p></p>";
+        if(ofertasPreCargadas[i].active){
+            allOffers += buildHtmlOfferFullSize(ofertasPreCargadas[i]) + "<p></p>";
+        }
     }
     $("#mainDiv").html(allOffers);
 }
