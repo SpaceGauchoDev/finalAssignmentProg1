@@ -18,7 +18,7 @@ function inicialSetUp() {
     construirYAgregarOfertasPreCargadas();
     construirYAgregarReservasPreCargadas(65); // el parametro es la probabilidad de reserva que tiene cada usuario pre cargado, -1 para ninguna reserva autogenerada
     mostrarTop5();
-    construirUsuarioParaNavegacion(0,""); //0 default, 1 admin, 2 regUser
+    construirUsuarioParaNavegacion(0, "ofertas");
     updateDisplay();
 }
 
@@ -48,8 +48,12 @@ function construirUsuarioParaNavegacion(pSetting, pMode) {
                 currentMode: pMode,
                 id: 2 };
             break;            
-        default : console.log("Wrong switch input at construirUsuarioParaNavegacion"); 
+        default : 
+			
+			
+			console.log("Wrong switch input at construirUsuarioParaNavegacion"); 
     }
+
 }
 
 function updateDisplay() {
@@ -64,6 +68,11 @@ function updateDisplay() {
             construirNavBar();
             mostrarOfertasPrecargadas();
             break;
+		case "detalleOferta":
+			console.log("detalle oferta");
+			construirNavBar();
+			mostrarDetalleOferta();
+			break;
         case "favoritos":
             console.log("display: favoritos");
             break;
@@ -103,8 +112,7 @@ function updateDisplay() {
         collapsible: true,
         active: false
     });
-
-    $(".inputDate").datepicker({
+	$(".inputDate").datepicker({
         dateFormat: 'dd/mm/yy'
     });
     
@@ -559,6 +567,7 @@ function logInReg(pUserId, pUserType) {
 
 // para manejar todas estas validaciones independientes vamos a evaluarlas por separado, cada validacion 
 // exitosa aumenta un contador, para considerar el ingreso aceptable el contador tiene que llegar a un numero minimo
+	
 function registerClicked() {
     console.log("Validate register attempt");
     var inputName = $("#nameRegisterField").val();
@@ -683,20 +692,52 @@ function registerClicked() {
 
 
 function mostrarOfertasPrecargadas() {
-    /*
+    
      //si es la primera vez que se muestra la pagina de ofertas, hay que cargar el array
-     if (ofertasPreCargadas.length === 0) {
-     construirYAgregarOfertasPreCargadas();
-     }
-     */
-    var allOffers = "";
-    for (var i = 0; i < ofertasPreCargadas.length; i++) {
-        if(ofertasPreCargadas[i].active){
-            allOffers += buildHtmlOfferFullSize(ofertasPreCargadas[i]) + "<p></p>";
-        }
-    }
-    $("#mainDiv").html(allOffers);
+     //if (ofertasPreCargadas.length === 0) {
+     //construirYAgregarOfertasPreCargadas();
+     //}
+     
+    
+    var ofertasNoDestacadas = cargarNoDestacados();
+	var ofertasDestacadas = cargarDestacados();
+	var tituloDestacadas = "<h3>Destacadas<h3>";
+	var tituloNoDestacadas = "<h3>Ofertas<h3>";
+    $("#mainDiv").html(tituloDestacadas + ofertasDestacadas + tituloNoDestacadas + ofertasNoDestacadas);
 }
+
+function getNoDestacados(){
+	var arrayNoDestacados = new Array();
+	$.each(ofertasPreCargadas, function( index, value ) {
+		
+		if (value.featured === -1 ){
+			arrayNoDestacados.push(value)
+		}
+	});
+	return arrayNoDestacados;
+}
+
+function cargarNoDestacados() {
+	var arrayNoDestacados = getNoDestacados();
+	var txtOfertas = "<div class='contenedorNoDestacados'>";
+	$.each(arrayNoDestacados, function( index, value ) {
+		txtOfertas += "<div class='oferta'>";
+		txtOfertas += "<div class='imagenOferta'>";
+        txtOfertas += "<img style='width:100px; height:100px;' src='" + value.imageUrl + "' >";
+		txtOfertas += "</div>";
+		
+		txtOfertas += "<div class='ofertaInfo'>";
+		txtOfertas += "<h4>" + value.displayName + "<h4>";
+		txtOfertas += "<p>Tipo: " + value.housingType + "<p>";
+		txtOfertas += "<p>Dirección: " + value.geoLocation + "<p>";
+		var botonVerOferta = '<br><button onclick="verOferta(this)" data-offerid="' + value.id + '">Ver oferta</button>';
+		txtOfertas += botonVerOferta;
+		txtOfertas += "</div>";
+		txtOfertas += "</div>";
+	});
+    txtOfertas += "</div>";
+    return txtOfertas;
+}	
 
 
 function buildHtmlOfferFullSize(pOferta) {
@@ -715,7 +756,7 @@ function buildHtmlOfferFullSize(pOferta) {
     var displayType = pOferta.housingType;
 
 
-    var col_2 = '<table class="offerFullSizeInfo" width="200"><tr><td>' + displayName + "</td></tr><tr><td>" + displayLocation + "</td></tr><tr><td>" + displayDateStart + "</td></tr><tr><td>" + displayDateEnd + "</td></tr><tr><td>" + displayPrice + "</td></tr><tr><td>" + displayType + "</td></tr></table>";
+    var col_2 = '<table class="offerFullSizeInfo" width="500"><tr><td><h4>' + displayName + "</h4></td></tr><tr><td>" + displayLocation + "</td></tr><tr><td>" + displayDateStart + "</td></tr><tr><td>" + displayDateEnd + "</td></tr><tr><td>" + displayPrice + "</td></tr><tr><td>" + displayType + "</td></tr></table>";
 
     //si el usuatio es admin, no construir los botones de reserva y favorito
     var resButton = "";
@@ -746,11 +787,6 @@ function buildHtmlOfferFullSize(pOferta) {
     //var col_3 = '<table class="offerFullSizeButtons" width="200"><tr><td>' + resButton + "</td></tr><tr><td>" + favButton + "</td></tr></table>";
     var col_3 = '<table class="offerFullSizeButtons" width="200"><tr><td>' + reservaAcordeon + "</td></tr><tr><td>" + favButton + "</td></tr></table>";
 
-    var offerFullSize = "<div class='oferta'><table class='offerFullSize'><tr><td>" + col_1 + "</td><td>" + col_2 + "</td><td>" + col_3 + "</td></tr></table></div>";
-
+    var offerFullSize = "<div class='oferta'><table class='offerFullSize'><tr><td>" + col_1 + "</td><td>" + col_2 + "</td></tr><tr><td colspan=2>" + col_3 + "</td></tr></table></div>";
     return offerFullSize;
 }
-
-
-
-

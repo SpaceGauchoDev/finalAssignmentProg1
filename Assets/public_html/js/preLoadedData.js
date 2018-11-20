@@ -1,7 +1,7 @@
 
 
 function construirYAgregarOfertasPreCargadas() {
-
+	
     var startEndAddedDates1 = randomStartEndAddedDates(5, 18, 5); // pMaxStartDelay, pMaxDifference, pMaxDaysSinceItWasAdded
     var oferta1 = {
         id: nuevoIdUnico(ofertasPreCargadas), // id único generado para cada oferta
@@ -20,8 +20,8 @@ function construirYAgregarOfertasPreCargadas() {
     var startEndAddedDates2 = randomStartEndAddedDates(18, 3, 14);
     var oferta2 = {
         id: nuevoIdUnico(ofertasPreCargadas),
-        featured: -1,
-        active: true,
+        featured: 1,
+        active: false,
         timesBooked: 0,
         displayName: "Alvear Hotel",
         geoLocation: "Yi 1372",
@@ -35,8 +35,8 @@ function construirYAgregarOfertasPreCargadas() {
     var startEndAddedDates3 = randomStartEndAddedDates(3, 12, 6);
     var oferta3 = {
         id: nuevoIdUnico(ofertasPreCargadas),
-        featured: -1,
-        active: true,
+        featured: 43,
+        active: false,
         timesBooked: 0,
         displayName: "Belmont House",
         geoLocation: "Avenida Rivera 6512",
@@ -50,8 +50,8 @@ function construirYAgregarOfertasPreCargadas() {
     var startEndAddedDates4 = randomStartEndAddedDates(5, 15, 1);
     var oferta4 = {
         id: nuevoIdUnico(ofertasPreCargadas),
-        featured: -1,
-        active: true,
+		featured: 14,
+        active: false,
         timesBooked: 0,
         displayName: "Dazzler Montevideo",
         geoLocation: "21 De Setiembre 2752",
@@ -61,8 +61,23 @@ function construirYAgregarOfertasPreCargadas() {
         startDate: startEndAddedDates4[0],
         endDate: startEndAddedDates4[1],     
         addedDate: startEndAddedDates4[2]};
+	
+	var startEndAddedDates5 = randomStartEndAddedDates(3, 12, 6);
+	var oferta5 = {
+        id: nuevoIdUnico(ofertasPreCargadas),
+        featured: -1,
+        active: false,
+        timesBooked: 0,
+        displayName: "Montevideo Hostel",
+        geoLocation: "Rivera 2752",
+        imageUrl: "media/pictures/04-Dazzler_Montevideo-21_De_Setiembre-2752.jpeg",
+        housingType: "Hotel",
+        perNightPrice: 11,
+        startDate: startEndAddedDates5[0],
+        endDate: startEndAddedDates5[1],     
+        addedDate: startEndAddedDates5[2]};
 
-    ofertasPreCargadas.push(oferta1, oferta2, oferta3, oferta4);
+    ofertasPreCargadas.push(oferta1, oferta2, oferta3, oferta4, oferta5);
 }
 
 
