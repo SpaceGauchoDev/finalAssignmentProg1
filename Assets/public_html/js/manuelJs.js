@@ -723,3 +723,200 @@ function destacadoToBot(btn) {
 // ^^^^^^^^^^^^^^^^^^^^^^^
 // EDITAR ORDEN DESTACADOS
 //========================
+
+//=============================
+// AUTO ADMINISTRACION DE DATOS
+//VVVVVVVVVVVVVVVVVVVVVVVVVVVVV
+
+function construirAdministracion() {
+    var htmlBody = "";
+    var htmlCeldaRegister = "";
+
+    htmlCeldaRegister += '<label for="nameModifyField" >Nombre: </label><input id="nameModifyField" type="text"/>' + "<br>";
+    htmlCeldaRegister += '<p></p>';
+    htmlCeldaRegister += '<label for="lastNameModifyField" >Apellido: </label><input id="lastNameModifyField" type="text"/>' + "<br>";
+    htmlCeldaRegister += '<p></p>';
+    htmlCeldaRegister += '<label for="edadModifyField" >Edad: </label><input id="edadModifyField" type="text"/>' + "<br>";
+    htmlCeldaRegister += '<p></p>';
+    htmlCeldaRegister += '<label for="emailModifyField" >Email: </label><input id="emailModifyField" type="text"/>' + "<br>";;
+    htmlCeldaRegister += '<p></p>';
+    htmlCeldaRegister += '<hr>';
+    htmlCeldaRegister += '<label for="oldPasswordModifyField" >Contraseña Anterior: </label><input id="oldPasswordModifyField" type="password"/>' + "<br>";
+    htmlCeldaRegister += '<p></p>';
+    htmlCeldaRegister += '<label for="newPasswordModifyField" >Contraseña Nueva: </label><input id="newPasswordModifyField" type="password"/>' + "<br>";
+    htmlCeldaRegister += '<p></p>';
+    htmlCeldaRegister += '<label for="newPasswordCheckModifyField" >Repetir Contraseña: </label><input id="newPasswordCheckModifyField" type="password"/>' + "<br>";
+    htmlCeldaRegister += '<p></p>';
+    htmlCeldaRegister += '<hr>';
+    htmlCeldaRegister += '<button onclick="updateUserDataClicked()">Aplicar</button>';
+    htmlCeldaRegister += '<p></p>';
+    htmlCeldaRegister += '<div id="messageToUserModifyData"></div>';
+    
+
+    htmlBody += "<table><tr><th>Datos de Usuario</th></th>";
+    htmlBody += "<tr><td>" + htmlCeldaRegister + "</td></tr></table>";
+
+    $("#mainDiv").html(htmlBody);
+    cargarDatosExitentes();
+}
+
+
+function cargarDatosExitentes(){
+    var userId = userNav.id;
+    var userIdIndex = getArrayIndexFromId(userId, usuariosPreCargados);
+    
+    $("#nameModifyField").val(usuariosPreCargados[userIdIndex].name);
+    $("#lastNameModifyField").val(usuariosPreCargados[userIdIndex].lastName);
+    $("#edadModifyField").val(usuariosPreCargados[userIdIndex].edad);
+    $("#emailModifyField").val(usuariosPreCargados[userIdIndex].email);
+    $("#oldPasswordModifyField").val("");
+    $("#newPasswordModifyField").val("");
+    $("#newPasswordCheckModifyField").val("");
+}
+
+
+function updateUserDataClicked(){
+    console.log("i get clicked");
+    
+    var inputName = $("#nameModifyField").val();
+    var inputLastName = $("#lastNameModifyField").val();
+    var inputEmail = $("#emailModifyField").val();
+    var inputEdad = $("#edadModifyField").val();
+    
+    var inputOldPass = $("#oldPasswordModifyField").val();
+    var inputNewPass = $("#newPasswordModifyField").val();    
+    var inputNewPassRep = $("#newPasswordCheckModifyField").val();
+    
+    var userArrayIndex = getArrayIndexFromId(userNav.id, usuariosPreCargados);
+   
+   var fullMsg = "";
+
+    var msgN = "";
+    var msgL = "";
+    var msgE = "";
+    var msgD = "";
+    var msgPv = "";
+    var msgPn = "";
+    var msgPnr = "";
+
+    var validationSuccess = 0;
+
+    // verificamos que el nombre ingresado no sea vacio
+    if (notEmptyString(inputName)) {
+        //EXITO
+        validationSuccess++;
+    } else {
+        fullMsg += "<p>- Error en <b>Nombre</b>, el nombre no puede estar vacío. </p>";
+    }
+
+    // verificamos que el apellido ingresado no sea vacio
+    if (notEmptyString(inputLastName)) {
+        //EXITO
+        validationSuccess++;
+    } else {
+        fullMsg += "<p>- Error en <b>Apellido</b>, el apellido no puede estar vacío.</p>";
+    }
+
+    // verificamos que el email sea valido y no esté previamente ingresado en el sistema
+    if (notEmptyString(inputEmail)) {
+        inputEmail = myTrim(inputEmail);
+        if (isValidEmailFormat(inputEmail)) {
+            var cont = 0;
+            var emailFound = false;
+            while (cont < usuariosPreCargados.length && emailFound === false) {
+                // checkeamos que el email no exista en la base de datos, a menos que sea el del mismo usuario que esta editando sus datos
+                if (usuariosPreCargados[cont].email === inputEmail && usuariosPreCargados[cont].id !== userNav.id) {
+                    emailFound = true;
+                }
+                cont++;
+            }
+            if (emailFound) {
+                //- Error en <b>Apellido</b>, el apellido no puede estar vacío.
+                fullMsg += "<p>- Error en <b>Email</b>, la direccion de email ingresada ya existe en el sistema.</p>";
+            } else {
+                //EXITO
+                validationSuccess++;
+            }
+        } else {
+            fullMsg += "<p>- Error en <b>Email</b>, las direcciones de email no pueden contener espacios y tienen que tener al menos un @.</p>";
+        }
+    } else {
+        fullMsg += "<p>- Error en <b>Email</b>, email no puede estar vacío.</p>";
+    }
+
+
+    // verificamos de la fecha de nacimiento
+    inputEdad = myTrim(inputEdad);
+    if (notEmptyString(inputEdad)) {
+        if(isNumber(inputEdad)){
+            inputEdad = makeInt(inputEdad);
+            if(inputEdad >= 0 && inputEdad<130){
+                //EXITO
+                validationSuccess++;
+            }else{
+                 fullMsg += "<p>- Error en <b>Edad</b>, la edad solo puede ser un valor entre 0 y 130.</p>";
+            }            
+        }else{
+            fullMsg += "<p>- Error en <b>Edad</b>, la edad solo puede ser numerica.</p>";
+        }
+    } else {
+        fullMsg += "<p>- Error en <b>Edad</b>, la edad no puede estar vacía, intente nuevamente.</p>";
+    }
+    
+    
+    // verificamos que la contraseña vieja no este vacía
+    if (notEmptyString(inputOldPass)) {
+        
+            
+        if(inputOldPass === usuariosPreCargados[userArrayIndex].password){
+            //EXITO
+            validationSuccess++;
+        }else{
+            fullMsg += "<p>- Error en <b>Contraseña anterior</b>, la contraseña anterior no coincide con la contraseña en archivo.</p>";
+        }
+
+    } else {
+        fullMsg += "<p>- Error en <b>Contraseña anterior</b>, la contraseña anterior no puede estar vacía.</p>";
+    }
+     
+
+    // verificamos que la contrasena nueva no sea vacia
+    inputNewPass = myTrim(inputNewPass);
+    if (notEmptyString(inputNewPass)) {
+        //EXITO
+        validationSuccess++;
+    } else {
+        fullMsg += "<p>- Error en <b>Contraseña nueva</b>, la nueva contraseña no puede estar vacía.</p>";
+    }
+    
+    // verificamos que la confirmacion de la contraseña nueva sea igual a la contraseña nueva
+    if (inputNewPass === inputNewPassRep) {
+        //EXITO
+        validationSuccess++;
+    } else {
+        fullMsg += "<p>- Error en <b>Repetir Contraseña</b>, La repeticion de la nueva contraseña no coincide con la nueva contraseña ingresada.</p>";
+    }
+    
+    if(validationSuccess === 7){
+        usuariosPreCargados[userArrayIndex].name = inputName;
+        usuariosPreCargados[userArrayIndex].lastName = inputLastName;
+        usuariosPreCargados[userArrayIndex].edad = inputEdad;        
+        usuariosPreCargados[userArrayIndex].password = inputNewPass;
+        
+        cargarDatosExitentes();
+        fullMsg = "<p>Datos actualizados con exito.</p>" + fullMsg;
+    }else{
+        fullMsg = "<p>Solucionar los siguientes errores e intentar de nuevo: </p>" + fullMsg;
+    }
+    $("#messageToUserModifyData").html(fullMsg);
+}
+
+
+
+
+
+
+
+// ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+// AUTO ADMINISTRACION DE DATOS
+//=============================

@@ -24,7 +24,7 @@ function inicialSetUp() {
     construirYAgregarOfertasPreCargadas();
     construirYAgregarReservasPreCargadas(65); // el parametro es la probabilidad de reserva que tiene cada usuario pre cargado, -1 para ninguna reserva autogenerada
     mostrarTop5();
-    construirUsuarioParaNavegacion(1, "ordenDestacados");
+    construirUsuarioParaNavegacion(2, "administracion");
     updateDisplay('full');
 }
 
@@ -61,20 +61,20 @@ function construirUsuarioParaNavegacion(pSetting, pMode) {
 
 function updateDisplay(pString) {
     if (pString === "full") {
+        construirNavBar();
         switch (userNav.currentMode) {
             case "login":
                 console.log("display: login");
-                construirNavBar();
                 construirLogInMode();
                 break;
             case "ofertas":
                 console.log("display: ofertas");
-                construirNavBar();
+                //construirNavBar();
                 mostrarOfertasPrecargadas();
                 break;
             case "detalleOferta":
                 console.log("detalle oferta");
-                construirNavBar();
+                //construirNavBar();
                 mostrarDetalleOferta();
                 break;
             case "favoritos":
@@ -88,25 +88,26 @@ function updateDisplay(pString) {
                 break;
             case "administracion":
                 console.log("display: administracion");
+                construirAdministracion();
                 break;
             case "editarOfertas":
                 console.log("display: editarOfertas");
-                construirNavBar();
+                //construirNavBar();
                 construirEditarOfertas();
                 break;
             case "solicitudesUsuario":
                 console.log("display: solicitudesUsuario");
-                construirNavBar();
+                //construirNavBar();
                 construirSolicitudesDeUsuario();
                 break;
             case "ordenDestacados":
                 console.log("display: ordenDestacados");
-                construirNavBar();
+                //construirNavBar();
                 construirEditarOrdenDestacados();
                 break;
             case "reservasAdmin":
                 console.log("display: reservasAdmin");
-                construirNavBar();
+                //construirNavBar();
                 construirReservasAdminMode();
                 break;
             case "stats":
@@ -341,7 +342,7 @@ function construirSolicitudesDeUsuario() {
     for (var i = 0; i < usuariosPreCargados.length; i++) {
         botonAprobar = crearBotonAprobar(i);
         botonRechazar = crearBotonRechazar(i);
-        htmlTableCells += "<tr><td>" + usuariosPreCargados[i].name + "</td><td>" + usuariosPreCargados[i].lastName + "</td><td>" + usuariosPreCargados[i].email + "</td><td>" + usuariosPreCargados[i].dateOfBirth.toDateString() + "</td><td>" + usuariosPreCargados[i].status + "</td><td>" + botonAprobar + "</td><td>" + botonRechazar + "</td></tr>";
+        htmlTableCells += "<tr><td>" + usuariosPreCargados[i].name + "</td><td>" + usuariosPreCargados[i].lastName + "</td><td>" + usuariosPreCargados[i].email + "</td><td>" + usuariosPreCargados[i].edad + "</td><td>" + usuariosPreCargados[i].status + "</td><td>" + botonAprobar + "</td><td>" + botonRechazar + "</td></tr>";
     }
     htmlBody = htmlBody + htmlTableCells + "</table>";
 
@@ -479,7 +480,7 @@ function construirLogInMode() {
     htmlCeldaRegister += '<p id="registerParagraphName"></p>';
     htmlCeldaRegister += '<label>Apellido: </label><input id="lastNameRegisterField" type="text"/>' + "<br>";
     htmlCeldaRegister += '<p id="registerParagraphLastName"></p>';
-    htmlCeldaRegister += '<label>Fecha De Nacimiento: </label><input id="dateOfBirthRegisterField" type="text"/>' + "<br>";
+    htmlCeldaRegister += '<label>Edad: </label><input id="edadRegisterField" type="text"/>' + "<br>";
     htmlCeldaRegister += '<p id="registerParagraphFecha"></p>';
     htmlCeldaRegister += '<label>Email: </label><input id="emailRegisterField" type="text"/>' + "<br>";
     htmlCeldaRegister += '<p id="registerParagraphEmail"></p>';
@@ -611,7 +612,7 @@ function registerClicked() {
     var inputName = $("#nameRegisterField").val();
     var inputLastName = $("#lastNameRegisterField").val();
     var inputEmail = $("#emailRegisterField").val();
-    var inputDateOfBirth = $("#dateOfBirthRegisterField").val();
+    var inputEdad = $("#edadRegisterField").val();
     var inputPass = $("#passwordRegisterField").val();
     var inputPassRep = $("#passwordCheckRegisterField").val();
 
@@ -666,13 +667,22 @@ function registerClicked() {
     }
 
 
-    // verificamos que la fecha de nacimiento no sea vacia
-    inputDateOfBirth = myTrim(inputDateOfBirth);
-    if (notEmptyString(inputDateOfBirth)) {
-        //EXITO
-        validationSuccess++;
+    // verificamos de la fecha de nacimiento
+    inputEdad = myTrim(inputEdad);
+    if (notEmptyString(inputEdad)) {
+        if(isNumber(inputEdad)){
+            inputEdad = makeInt(inputEdad);
+            if(inputEdad >= 0 && inputEdad<130){
+                //EXITO
+                validationSuccess++;
+            }else{
+                 msgD = "Edad, la edad solo puede ser un valor entre 0 y 130.";
+            }            
+        }else{
+            msgD = "Edad, la edad solo puede ser numerica.";
+        }
     } else {
-        msgD = "Fecha de nacimiento inválida, la fecha de nacimiento no puede estar vacía, intente nuevamente.";
+        msgD = "Edad, la edad no puede estar vacía, intente nuevamente.";
     }
 
     // verificamos que la contrasena no sea vacia
@@ -690,7 +700,7 @@ function registerClicked() {
         //EXITO
         validationSuccess++;
     } else {
-        msgP = "La repeticion de la contraseña no coincide con la contraseña ingresada, intente nuevamente.";
+        msgPr = "La repeticion de la contraseña no coincide con la contraseña ingresada, intente nuevamente.";
     }
 
     $("#registerParagraphName").html(msgN);
@@ -704,7 +714,7 @@ function registerClicked() {
     if (validationSuccess === 6) {
         console.log("New user registration validated");
 
-        var _dateOfBirth = new Date();
+        var _edad = new Date();
         var _favorited = new Array();
 
         var usuario1 = {
@@ -714,7 +724,7 @@ function registerClicked() {
             name: inputName,
             lastName: inputLastName,
             email: inputEmail,
-            dateOfBirth: _dateOfBirth,
+            edad: _edad,
             password: inputPass,
             favorited: _favorited};
 

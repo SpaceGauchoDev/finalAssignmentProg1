@@ -83,7 +83,7 @@ addedDate: startEndAddedDates2[2]};
 
 
 function construirYAgregarUsuariosPreCargados() {
-    var _dateOfBirth = new Date();
+    //var _edad = new Date();
     var _favorited = new Array();
     
     var usuario1 = {
@@ -93,7 +93,7 @@ function construirYAgregarUsuariosPreCargados() {
         name: "Sebastián", // nombre que el usuario ingresa
         lastName: "Pérez", // apellido que el usuario ingresa
         email: "SebastiánPerez@proveedorDeEmail.com", // email que el usuario ingresa
-        dateOfBirth: _dateOfBirth, // fecha de nacimiento que el usuario ingresa
+        edad: 18, // fecha de nacimiento que el usuario ingresa
         password: "1111", // contraseña que el usuario ingresa
         favorited: _favorited}; // array con los id's de las ofertas que el usuario ha marcado como favoritas
     
@@ -104,7 +104,7 @@ function construirYAgregarUsuariosPreCargados() {
         name: "Diego",
         lastName: "Gómez",
         email: "DiegoGomez@proveedorDeEmail.com",
-        dateOfBirth: _dateOfBirth,
+        edad: 18,
         password: "2222",
         favorited: _favorited};
     
@@ -116,7 +116,7 @@ function construirYAgregarUsuariosPreCargados() {
         name: "Gabriel",
         lastName: "Sosa",
         email: "GabrielSosa@proveedorDeEmail.com",
-        dateOfBirth: _dateOfBirth,
+        edad: 18,
         password: "2222",
         favorited: _favorited};
     
@@ -128,7 +128,7 @@ function construirYAgregarUsuariosPreCargados() {
         name: "Mariana",
         lastName: "Romero",
         email: "MarianaRomero@proveedorDeEmail.com",
-        dateOfBirth: _dateOfBirth,
+        edad: 18,
         password: "2222",
         favorited: _favorited};
     
@@ -139,7 +139,7 @@ function construirYAgregarUsuariosPreCargados() {
         name: "testAdminName",
         lastName: "testAdminLastName",
         email: "a@",
-        dateOfBirth: _dateOfBirth,
+        edad: 18,
         password: "1234",
         favorited: _favorited};
     
@@ -150,7 +150,7 @@ function construirYAgregarUsuariosPreCargados() {
         name: "testRegUserName",
         lastName: "testRegUserLastName",
         email: "r@",
-        dateOfBirth: _dateOfBirth,
+        edad: 18,
         password: "1234",
         favorited: _favorited};
     
