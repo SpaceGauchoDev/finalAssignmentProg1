@@ -584,3 +584,25 @@ function construirInputDataEO() {
 // ^^^^^^^^^^^^^^^^^^
 // EDITAR OFERTAS
 //===================
+
+
+//========================
+// EDITAR ORDEN DESTACADOS
+//VVVVVVVVVVVVVVVVVVVVVVVV
+function construirEditarOrdenDestacados(){
+    var htmlDestacados = cargarDestacados();
+    var tituloDestacadas = "<h3>Destacadas<h3>";
+
+    
+    $("#mainDiv").html(tituloDestacadas + htmlDestacados);
+}
+
+
+
+
+
+
+
+// ^^^^^^^^^^^^^^^^^^^^^^^
+// EDITAR ORDEN DESTACADOS
+//========================

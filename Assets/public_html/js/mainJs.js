@@ -24,8 +24,8 @@ function inicialSetUp() {
     construirYAgregarOfertasPreCargadas();
     construirYAgregarReservasPreCargadas(65); // el parametro es la probabilidad de reserva que tiene cada usuario pre cargado, -1 para ninguna reserva autogenerada
     mostrarTop5();
-    construirUsuarioParaNavegacion(0, "ofertas");
-    updateDisplay();
+    construirUsuarioParaNavegacion(0, "ordenDestacados");
+    updateDisplay('full');
 }
 
 function construirUsuarioParaNavegacion(pSetting, pMode) {
@@ -35,7 +35,7 @@ function construirUsuarioParaNavegacion(pSetting, pMode) {
             userNav = {
                 type: "noReg", // puede ser: "noReg", "regUser", "admin"
                 currentMode: "ofertas", // para regUser puede ser: "ofertas", "favoritos", "estadoDeCuenta", "reservasReg", "administracion"
-                // para admin puede ser: "ofertas", "editarOfertas", "solicitudesUsuario", "reservasAdmin", "stats", "administracion"
+                // para admin puede ser: "ofertas", "editarOfertas", "solicitudesUsuario", "reservasAdmin", "stats", "administracion", "ordenDestacados"
                 // para noReg puede ser: "ofertas", "login"
                 id: -1 // -1 es el id de usuarios no registrados
             };
@@ -53,88 +53,94 @@ function construirUsuarioParaNavegacion(pSetting, pMode) {
                 type: "regUser",
                 currentMode: pMode,
                 id: 2};
-            break;            
-        default : 
-        console.log("Wrong switch input at construirUsuarioParaNavegacion"); 
+            break;
+        default :
+            console.log("Wrong switch input at construirUsuarioParaNavegacion");
     }
 }
 
-function updateDisplay() {
-    switch (userNav.currentMode) {
-        case "login":
-            console.log("display: login");
-            construirNavBar();
-            construirLogInMode();
-            break;
-        case "ofertas":
-            console.log("display: ofertas");
-            construirNavBar();
-            mostrarOfertasPrecargadas();
-            break;
-		case "detalleOferta":
-			console.log("detalle oferta");
-			construirNavBar();
-			mostrarDetalleOferta();
-			break;
-        case "favoritos":
-            console.log("display: favoritos");
-            break;
-        case "estadoDeCuenta":
-            console.log("display: estadoDeCuenta");
-            break;
-        case "reservasReg":
-            console.log("display: reservasReg");
-            break;
-        case "administracion":
-            console.log("display: administracion");
-            break;
-        case "editarOfertas":
-            console.log("display: editarOfertas");
-            construirNavBar();
-            construirEditarOfertas();
-            break;         
-        case "solicitudesUsuario":
-            console.log("display: solicitudesUsuario");
-            construirNavBar();
-            construirSolicitudesDeUsuario();
-            break;
-        case "reservasAdmin":
-            console.log("display: reservasAdmin");
-            construirNavBar();
-            construirReservasAdminMode();
-            break;
-        case "stats":
-            console.log("display: stats");
-            break;
-        default :
-            console.log("currentMode para updateDisplay incorrecto");
+function updateDisplay(pString) {
+    if (pString === "full") {
+        switch (userNav.currentMode) {
+            case "login":
+                console.log("display: login");
+                construirNavBar();
+                construirLogInMode();
+                break;
+            case "ofertas":
+                console.log("display: ofertas");
+                construirNavBar();
+                mostrarOfertasPrecargadas();
+                break;
+            case "detalleOferta":
+                console.log("detalle oferta");
+                construirNavBar();
+                mostrarDetalleOferta();
+                break;
+            case "favoritos":
+                console.log("display: favoritos");
+                break;
+            case "estadoDeCuenta":
+                console.log("display: estadoDeCuenta");
+                break;
+            case "reservasReg":
+                console.log("display: reservasReg");
+                break;
+            case "administracion":
+                console.log("display: administracion");
+                break;
+            case "editarOfertas":
+                console.log("display: editarOfertas");
+                construirNavBar();
+                construirEditarOfertas();
+                break;
+            case "solicitudesUsuario":
+                console.log("display: solicitudesUsuario");
+                construirNavBar();
+                construirSolicitudesDeUsuario();
+                break;
+            case "ordenDestacados":
+                console.log("display: ordenDestacados");
+                construirNavBar();
+                construirEditarOrdenDestacados();
+                break;
+            case "reservasAdmin":
+                console.log("display: reservasAdmin");
+                construirNavBar();
+                construirReservasAdminMode();
+                break;
+            case "stats":
+                console.log("display: stats");
+                break;
+            default :
+                console.log("currentMode para updateDisplay incorrecto");
+        }
     }
 
     // inicializacion y settings de jquery-ui
     //vvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvv
-    
-    $(".accordionDiv").accordion({
-        collapsible: true,
-        active: false
-    });
-	$(".inputDate").datepicker({
-        dateFormat: 'dd/mm/yy'
-    });
+    if (pString === 'full' || pString === 'ui') {
+        $(".accordionDiv").accordion({
+            collapsible: true,
+            active: false
+        });
+        $(".inputDate").datepicker({
+            dateFormat: 'dd/mm/yy'
+        });
 
-    $("input[type='radio']").checkboxradio({icon: false});
-    $("input[type='checkbox']").checkboxradio();    
-    
-    $( ".widget button" ).button();
-    
-    if (userNav.currentMode !== "editarOfertas") {
-        restringirFechasSeleccionables();
-    }else{
-        soloFechasFuturas();
+        $("input[type='radio']").checkboxradio({icon: false});
+        $("input[type='checkbox']").checkboxradio();
+
+        $(".widget button").button();
+
+        if (userNav.currentMode !== "editarOfertas") {
+            restringirFechasSeleccionables();
+        } else {
+            soloFechasFuturas();
+        }
     }
-    
     //^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
     // inicializacion y settings de jquery-ui
-    
 }
 
 // ======================================
@@ -163,9 +169,9 @@ function soloFechasFuturas() {
     // itero a traves de todos los elementos de la clase .inputDate
     $(".inputDate").each(
             function () {
-                
+
                 var dateInputId = $(this).attr("id");
-             
+
                 var minDate = new Date();
                 var currentSelector = "#" + dateInputId;
 
@@ -259,6 +265,7 @@ function construirNavBar() {
         if (userNav.type === "admin") {
             htmlSelector += '<option value="ofertas">Ofertas</option>';
             htmlSelector += '<option value="editarOfertas">Editar Ofertas</option>';
+            htmlSelector += '<option value="ordenDestacados">Editar orden de destacados</option>';
             htmlSelector += '<option value="solicitudesUsuario">Solicitudes de usuario</option>';
             htmlSelector += '<option value="reservasAdmin">Confirmar reservas</option>';
             htmlSelector += '<option value="stats">Estadisticas</option>';
@@ -311,12 +318,12 @@ function modeSelectorChanged() {
     console.log("interaccion con selector de modo detectada");
     var currentSelectorValue = $("#modeSelector").val();
     userNav.currentMode = currentSelectorValue;
-    updateDisplay();
+    updateDisplay("full");
 }
 
 function homeClicked() {
     userNav.currentMode = "ofertas";
-    updateDisplay();
+    updateDisplay("full");
 }
 
 // ======================
@@ -365,14 +372,14 @@ function clickBotonAprobar(event) {
     var posEnElArray = event.data.param1;
     console.log("Usuario hace click en aprobar a un objeto de la lista de usuarios en la posicion " + posEnElArray);
     usuariosPreCargados[posEnElArray].status = "habilitado";
-    updateDisplay();
+    updateDisplay('full');
 }
 
 function clickBotonRechazar(event) {
     var posEnElArray = event.data.param1;
     console.log("Usuario hace click en rechazar a un objeto de la lista de usuarios en la posicion " + posEnElArray);
     usuariosPreCargados[posEnElArray].status = "rechazado";
-    updateDisplay();
+    updateDisplay('full');
 }
 
 // ^^^^^^^^^^^^^^^^^^^^^^
@@ -413,7 +420,7 @@ function aprobarReservaClicked(aprobarBtn) {
     var i = getArrayIndexFromId(reserveId, reservasPreCargadas);
     reservasPreCargadas[i].status = "aprobada";
 
-    updateDisplay();
+    updateDisplay('full');
 }
 
 function rechazarReservaClicked(rechazarBtn) {
@@ -423,7 +430,7 @@ function rechazarReservaClicked(rechazarBtn) {
     var i = getArrayIndexFromId(reserveId, reservasPreCargadas);
     reservasPreCargadas[i].status = "desaprobada";
 
-    updateDisplay();
+    updateDisplay('full');
 }
 
 
@@ -445,7 +452,7 @@ function rechazarReservaClicked(rechazarBtn) {
 function logInModeClicked() {
     console.log("User tried to log in");
     userNav.currentMode = "login";
-    updateDisplay();
+    updateDisplay('full');
 }
 
 
@@ -454,7 +461,7 @@ function logOutClicked() {
     userNav.currentMode = "ofertas";
     userNav.type = "noReg";
     userNav.id = -1;
-    updateDisplay();
+    updateDisplay('full');
 }
 
 //crea la pantalla para logearse o registrar un usuario nuevo
@@ -584,7 +591,7 @@ function logInReg(pUserId, pUserType) {
     userNav.currentMode = "ofertas";
     userNav.type = pUserType;
     userNav.id = pUserId;
-    updateDisplay();
+    updateDisplay('full');
 }
 
 // ^^^^^^^^^^^^^^^^^^^^^^
@@ -598,7 +605,7 @@ function logInReg(pUserId, pUserType) {
 
 // para manejar todas estas validaciones independientes vamos a evaluarlas por separado, cada validacion 
 // exitosa aumenta un contador, para considerar el ingreso aceptable el contador tiene que llegar a un numero minimo
-	
+
 function registerClicked() {
     console.log("Validate register attempt");
     var inputName = $("#nameRegisterField").val();
@@ -714,7 +721,7 @@ function registerClicked() {
         usuariosPreCargados.push(usuario1);
 
         userNav.currentMode = "ofertas";
-        updateDisplay();
+        updateDisplay('full');
     }
 }
 // ^^^^^^^^^^^^^^^^^^^^^^
@@ -856,46 +863,50 @@ function userHasReservedThisOffer(pUserId, pOfferId) {
 // ^^^^^^^^^^^^^^^^^^^^^^
 // RESERVAS
 // ======================
-function mostrarOfertasPrecargadas() {    
+function mostrarOfertasPrecargadas() {
     var ofertasNoDestacadas = cargarNoDestacados();
-	var ofertasDestacadas = cargarDestacados();
-	var tituloDestacadas = "<h3>Destacadas<h3>";
-	var tituloNoDestacadas = "<h3>Ofertas<h3>";
+    var ofertasDestacadas = cargarDestacados();
+    var tituloDestacadas = "<h3>Destacadas<h3>";
+    var tituloNoDestacadas = "<h3>Ofertas<h3>";
     $("#mainDiv").html(tituloDestacadas + ofertasDestacadas + tituloNoDestacadas + ofertasNoDestacadas);
 }
 
-function getNoDestacados(){
-	var arrayNoDestacados = new Array();
-	$.each(ofertasPreCargadas, function( index, value ) {
-		
-		if (value.featured === -1 ){
-			arrayNoDestacados.push(value);
-		}
-	});
-	return arrayNoDestacados;
+function getNoDestacados() {
+    var arrayNoDestacados = new Array();
+    $.each(ofertasPreCargadas, function (index, value) {
+
+        if (value.featured === -1) {
+            arrayNoDestacados.push(value);
+        }
+    });
+    return arrayNoDestacados;
 }
 
 function cargarNoDestacados() {
-	var arrayNoDestacados = getNoDestacados();
-	var txtOfertas = "<div class='contenedorNoDestacados'>";
-	$.each(arrayNoDestacados, function( index, value ) {
-		txtOfertas += "<div class='oferta'>";
-		txtOfertas += "<div class='imagenOferta'>";
+    var arrayNoDestacados = getNoDestacados();
+    var txtOfertas = "<div class='contenedorNoDestacados'>";
+    $.each(arrayNoDestacados, function (index, value) {
+        txtOfertas += "<div class='oferta'>";
+        txtOfertas += "<div class='imagenOferta'>";
         txtOfertas += "<img style='width:100px; height:100px;' src='" + value.imageUrl + "' >";
-		txtOfertas += "</div>";
-		
-		txtOfertas += "<div class='ofertaInfo'>";
-		txtOfertas += "<h4>" + value.displayName + "<h4>";
-		txtOfertas += "<p>Tipo: " + value.housingType + "<p>";
-		txtOfertas += "<p>Dirección: " + value.geoLocation + "<p>";
-		var botonVerOferta = '<br><button onclick="verOferta(this)" data-offerid="' + value.id + '">Ver oferta</button>';
-		txtOfertas += botonVerOferta;
-		txtOfertas += "</div>";
-		txtOfertas += "</div>";
-	});
+        txtOfertas += "</div>";
+
+        txtOfertas += "<div class='ofertaInfo'>";
+        txtOfertas += "<h4>" + value.displayName + "<h4>";
+        txtOfertas += "<p>Tipo: " + value.housingType + "<p>";
+        txtOfertas += "<p>Dirección: " + value.geoLocation + "<p>";
+        // muestra el id de oferta si el usuario es administrador para ayudar a buscar editar ofertas especificas
+        if(userNav.type === 'admin'){
+            txtOfertas += "<p>ID: " + value.id + "<p>";
+        }        
+        var botonVerOferta = '<br><button onclick="verOferta(this)" data-offerid="' + value.id + '">Ver oferta</button>';
+        txtOfertas += botonVerOferta;
+        txtOfertas += "</div>";
+        txtOfertas += "</div>";
+    });
     txtOfertas += "</div>";
     return txtOfertas;
-}	
+}
 
 
 function buildHtmlOfferFullSize(pOferta) {
