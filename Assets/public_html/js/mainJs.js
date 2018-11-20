@@ -2,17 +2,23 @@
 $(document).ready(inicialSetUp);
 
 var ofertas;
+var ofertaEditable;
 var ofertasPreCargadas;
 var usuariosPreCargados;
 var reservasPreCargadas;
 var userNav;
+var ofertaEditadaExitosamente;
+
+
 
 function inicialSetUp() {
     ofertas = new Array();
+    ofertaEditable = new Array();
     ofertasPreCargadas = new Array();
     usuariosPreCargados = new Array();
     reservasPreCargadas = new Array();
     userNav = new Array();
+    ofertaEditadaExitosamente = false;
 
     construirYAgregarUsuariosPreCargados();
     construirYAgregarOfertasPreCargadas();
@@ -39,21 +45,18 @@ function construirUsuarioParaNavegacion(pSetting, pMode) {
             userNav = {
                 type: "admin",
                 currentMode: pMode,
-                id: 1 };
+                id: 1};
             break;
         case 2:
             // for testing purposes
             userNav = {
                 type: "regUser",
                 currentMode: pMode,
-                id: 2 };
+                id: 2};
             break;            
         default : 
-			
-			
-			console.log("Wrong switch input at construirUsuarioParaNavegacion"); 
+        console.log("Wrong switch input at construirUsuarioParaNavegacion"); 
     }
-
 }
 
 function updateDisplay() {
@@ -89,7 +92,7 @@ function updateDisplay() {
             console.log("display: editarOfertas");
             construirNavBar();
             construirEditarOfertas();
-            break;
+            break;         
         case "solicitudesUsuario":
             console.log("display: solicitudesUsuario");
             construirNavBar();
@@ -107,7 +110,9 @@ function updateDisplay() {
             console.log("currentMode para updateDisplay incorrecto");
     }
 
-
+    // inicializacion y settings de jquery-ui
+    //vvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvv
+    
     $(".accordionDiv").accordion({
         collapsible: true,
         active: false
@@ -115,62 +120,88 @@ function updateDisplay() {
 	$(".inputDate").datepicker({
         dateFormat: 'dd/mm/yy'
     });
+
+    $("input[type='radio']").checkboxradio({icon: false});
+    $("input[type='checkbox']").checkboxradio();    
     
-    restringirFechasSeleccionables();    
+    $( ".widget button" ).button();
+    
+    if (userNav.currentMode !== "editarOfertas") {
+        restringirFechasSeleccionables();
+    }else{
+        soloFechasFuturas();
+    }
+    
+    //^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    // inicializacion y settings de jquery-ui
+    
 }
 
 // ======================================
 // CONFIGURACION DE jQuery-UI datepickers
 // vvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvv
 
-function restringirFechasSeleccionables(){
+function restringirFechasSeleccionables() {
     // itero a traves de todos los elementos de la clase .inputDate
     $(".inputDate").each(
-        function() {
-            //obtengo el id del input de fecha, un string de formato resDateInicio_#### o resDateFin_####
-            var dateInputId = $(this).attr("id");
-            var offerId =  getOfferIdFromDateInputId(dateInputId);
-            var minDate = getOfferStartDate(offerId);
-            var maxDate = getOfferEndDate(offerId);
-            var currentSelector = "#" + dateInputId;
-            
-            $(currentSelector).datepicker( "option", "minDate", minDate );
-            $(currentSelector).datepicker( "option", "maxDate", maxDate );
-            
-        }
+            function () {
+                //obtengo el id del input de fecha, un string de formato resDateInicio_#### o resDateFin_####
+                var dateInputId = $(this).attr("id");
+                var offerId = getOfferIdFromDateInputId(dateInputId);
+                var minDate = getOfferStartDate(offerId);
+                var maxDate = getOfferEndDate(offerId);
+                var currentSelector = "#" + dateInputId;
+
+                $(currentSelector).datepicker("option", "minDate", minDate);
+                $(currentSelector).datepicker("option", "maxDate", maxDate);
+
+            }
     );
 }
 
+function soloFechasFuturas() {
+    // itero a traves de todos los elementos de la clase .inputDate
+    $(".inputDate").each(
+            function () {
+                
+                var dateInputId = $(this).attr("id");
+             
+                var minDate = new Date();
+                var currentSelector = "#" + dateInputId;
 
+                $(currentSelector).datepicker("option", "minDate", minDate);
+            }
+    );
+}
 
-function getOfferIdFromDateInputId(pDateInputId){
+function getOfferIdFromDateInputId(pDateInputId) {
     var result = "";
     var dashFound = false;
     var x = 0;
-    while (dashFound === false && x < pDateInputId.length){
-        if(pDateInputId.charAt(x) === "_"){
+    while (dashFound === false && x < pDateInputId.length) {
+        if (pDateInputId.charAt(x) === "_") {
             dashFound = true;
-        }else{
+        } else {
             x++;
-        } 
+        }
     }
-    
-    for (var i = x+1; i<pDateInputId.length; i++){
-       result += pDateInputId.charAt(i);
+
+    for (var i = x + 1; i < pDateInputId.length; i++) {
+        result += pDateInputId.charAt(i);
     }
-    
+
     result = parseInt(result);
 
     return result;
 }
 
-function getOfferStartDate(pIdOferta){
+function getOfferStartDate(pIdOferta) {
     //console.log(pIdOferta);
     var result = "error";
     var offerFound = false;
     var x = 0;
-    while (offerFound === false && x <ofertasPreCargadas.length ){
-        if(ofertasPreCargadas[x].id === pIdOferta){
+    while (offerFound === false && x < ofertasPreCargadas.length) {
+        if (ofertasPreCargadas[x].id === pIdOferta) {
             offerFound = true;
             result = ofertasPreCargadas[x].startDate;
         }
@@ -179,13 +210,13 @@ function getOfferStartDate(pIdOferta){
     return result;
 }
 
-function getOfferEndDate(pIdOferta){
+function getOfferEndDate(pIdOferta) {
     //console.log(pIdOferta);
     var result = "error";
     var offerFound = false;
     var x = 0;
-    while (offerFound === false && x <ofertasPreCargadas.length ){
-        if(ofertasPreCargadas[x].id === pIdOferta){
+    while (offerFound === false && x < ofertasPreCargadas.length) {
+        if (ofertasPreCargadas[x].id === pIdOferta) {
             offerFound = true;
             result = ofertasPreCargadas[x].endDate;
         }
@@ -365,7 +396,7 @@ function construirReservasAdminMode() {
     for (var i = 0; i < reservasPreCargadas.length; i++) {
         var userEmail = usuariosPreCargados[getArrayIndexFromId(reservasPreCargadas[i].userId, usuariosPreCargados)].email;
         var offerDisplayName = ofertasPreCargadas[getArrayIndexFromId(reservasPreCargadas[i].offerId, ofertasPreCargadas)].displayName;
-        
+
         botonAprobar = '<button onclick="aprobarReservaClicked(this)" data-reserveid="' + reservasPreCargadas[i].id + '">Aprobar</button>';
         botonRechazar = '<button onclick="rechazarReservaClicked(this)" data-reserveid="' + reservasPreCargadas[i].id + '">Rechazar</button>';
         htmlTableCells += "<tr><td>" + userEmail + "</td><td>" + reservasPreCargadas[i].userId + "</td><td>" + offerDisplayName + "</td><td>" + reservasPreCargadas[i].offerId + "</td><td>" + reservasPreCargadas[i].status + "</td><td>" + botonAprobar + "</td><td>" + botonRechazar + "</td></tr>";
@@ -378,20 +409,20 @@ function construirReservasAdminMode() {
 function aprobarReservaClicked(aprobarBtn) {
     var reserveId = parseInt(aprobarBtn.getAttribute("data-reserveid"));
     console.log("usuario administrador clickeo aprobar reserva: " + reserveId);
-    
+
     var i = getArrayIndexFromId(reserveId, reservasPreCargadas);
-    reservasPreCargadas[i].status = "aprobada"; 
-    
+    reservasPreCargadas[i].status = "aprobada";
+
     updateDisplay();
 }
 
 function rechazarReservaClicked(rechazarBtn) {
     var reserveId = parseInt(rechazarBtn.getAttribute("data-reserveid"));
     console.log("usuario administrador clickeo aprobar reserva: " + reserveId);
-    
+
     var i = getArrayIndexFromId(reserveId, reservasPreCargadas);
-    reservasPreCargadas[i].status = "desaprobada"; 
-    
+    reservasPreCargadas[i].status = "desaprobada";
+
     updateDisplay();
 }
 
@@ -442,7 +473,7 @@ function construirLogInMode() {
     htmlCeldaRegister += '<label>Apellido: </label><input id="lastNameRegisterField" type="text"/>' + "<br>";
     htmlCeldaRegister += '<p id="registerParagraphLastName"></p>';
     htmlCeldaRegister += '<label>Fecha De Nacimiento: </label><input id="dateOfBirthRegisterField" type="text"/>' + "<br>";
-    htmlCeldaRegister += '<p id="registerParagraphFecha"></p>';    
+    htmlCeldaRegister += '<p id="registerParagraphFecha"></p>';
     htmlCeldaRegister += '<label>Email: </label><input id="emailRegisterField" type="text"/>' + "<br>";
     htmlCeldaRegister += '<p id="registerParagraphEmail"></p>';
     htmlCeldaRegister += '<label>Contraseña: </label><input id="passwordRegisterField" type="password"/>' + "<br>";
@@ -681,24 +712,151 @@ function registerClicked() {
             favorited: _favorited};
 
         usuariosPreCargados.push(usuario1);
-        
-            userNav.currentMode = "ofertas";
-            updateDisplay();
+
+        userNav.currentMode = "ofertas";
+        updateDisplay();
     }
 }
 // ^^^^^^^^^^^^^^^^^^^^^^
 // REGISTER
 // ======================
 
+// ======================
+// FAVORITOS
+// VVVVVVVVVVVVVVVVVVVVVV
+function favoritoClicked(favoritoBtn) {
+    var offerId = parseInt(favoritoBtn.getAttribute("data-offerid"));
+    console.log("usuario clickeo favoritear oferta: " + offerId);
+    // si usuario es tipo noReg, mandar a pagina de login
+    if (userNav.type === "noReg") {
+        logInModeClicked();
+    } else {
+        // si el usuario es tipo regUser, agregar a su lista de favoritos
+        var userId = userNav.id;
+        addToUserFavoritesList(userId, offerId);
+    }
+}
 
-function mostrarOfertasPrecargadas() {
-    
-     //si es la primera vez que se muestra la pagina de ofertas, hay que cargar el array
-     //if (ofertasPreCargadas.length === 0) {
-     //construirYAgregarOfertasPreCargadas();
-     //}
-     
-    
+function addToUserFavoritesList(pUserId, pOfferId) {
+    // buscamos el usuario
+    var userFound = false;
+    var x = 0;
+
+    while (userFound === false && x < usuariosPreCargados.length) {
+        if (usuariosPreCargados[x].id === pUserId) {
+            userFound = true;
+        } else {
+            x++;
+        }
+    }
+    // checkeo de seguridad
+    if (userFound === true) {
+        //averiguamos si el usuario ya tiene esa oferta agregada a sus favoritos
+        var offerFound = false;
+        var z = 0;
+        while (offerFound === false && z < usuariosPreCargados[x].favorited.length) {
+            if (usuariosPreCargados[x].favorited[z] === pOfferId) {
+                offerFound = true;
+            }
+            z++;
+        }
+
+        // si el usuario no tiene la oferta agregada a sus favoritos, la agregamos
+        if (offerFound === false) {
+            usuariosPreCargados[x].favorited.push(pOfferId);
+        }
+    } else {
+        console.log("Error, user not found at addToUserFavoritesList");
+    }
+}
+// ^^^^^^^^^^^^^^^^^^^^^^
+// FAVORITOS
+// ======================
+
+
+
+
+// ======================
+// RESERVAS
+// VVVVVVVVVVVVVVVVVVVVVV
+
+function reservaClicked(reservaBtn) {
+    var offerId = reservaBtn.getAttribute("data-offerid");
+    console.log("usuario clickeo en reservar: " + offerId);
+
+    if (userNav.type === "noReg") {
+        logInModeClicked();
+    } else {
+        // si el usuario es tipo regUser, validar rango de fechas 
+        var pickedStartDate = $("#resDateInicio_" + offerId).datepicker("getDate");
+        var pickedEndDate = $("#resDateFin_" + offerId).datepicker("getDate");
+
+        if (pickedStartDate > pickedEndDate) {
+            var msg = "Fecha de fin no puede ser menor a fecha de inicio, intente nuevamete.";
+            $("#paragraphReserva_" + offerId).html(msg);
+        } else {
+            if (userHasReservedThisOffer(userNav.id, parseInt(offerId))) {
+                var msg = "Ya tiene una reserva para esta oferta";
+                $("#paragraphReserva_" + offerId).html(msg);
+            } else {
+                var msg = "Reserva exitosa, pendiente aprobación.";
+                $("#paragraphReserva_" + offerId).html(msg);
+                agregarReserva(userNav.id, parseInt(offerId), pickedStartDate, pickedEndDate);
+            }
+        }
+    }
+}
+
+
+
+function agregarReserva(pUserId, pOfferId, pStartDate, pEndDate) {
+
+    var offerIndex = getArrayIndexFromId(pOfferId, ofertasPreCargadas);
+
+    ofertasPreCargadas[offerIndex].timesBooked = ofertasPreCargadas[offerIndex].timesBooked++;
+
+
+    //obtenemos el numero de días que dura la reserva
+    var numbersOfNights = Math.round((pEndDate - pStartDate) / (1000 * 60 * 60 * 24));
+    console.log("index pos" + offerIndex);
+
+    //obtenemos el precio total como producto de los dias de reserva por el precio por dia
+    var totalPrice_ = numbersOfNights * ofertasPreCargadas[offerIndex].perNightPrice;
+
+    var reserva = {
+        id: nuevoIdUnico(reservasPreCargadas),
+        userId: pUserId,
+        offerId: pOfferId,
+        totalPrice: totalPrice_,
+        startDate: pStartDate,
+        endDate: pEndDate,
+        status: "pendiente"
+    };
+
+    reservasPreCargadas.push(reserva);
+}
+
+
+
+function userHasReservedThisOffer(pUserId, pOfferId) {
+    // buscamos el usuario
+    var reserveFound = false;
+    var x = 0;
+
+    while (reserveFound === false && x < reservasPreCargadas.length) {
+        if (reservasPreCargadas[x].userId === pUserId && reservasPreCargadas[x].offerId === pOfferId) {
+            reserveFound = true;
+        } else {
+            x++;
+        }
+    }
+    return reserveFound;
+}
+
+// ^^^^^^^^^^^^^^^^^^^^^^
+// RESERVAS
+// ======================
+function mostrarOfertasPrecargadas() {    
     var ofertasNoDestacadas = cargarNoDestacados();
 	var ofertasDestacadas = cargarDestacados();
 	var tituloDestacadas = "<h3>Destacadas<h3>";
@@ -711,7 +869,7 @@ function getNoDestacados(){
 	$.each(ofertasPreCargadas, function( index, value ) {
 		
 		if (value.featured === -1 ){
-			arrayNoDestacados.push(value)
+			arrayNoDestacados.push(value);
 		}
 	});
 	return arrayNoDestacados;
@@ -765,22 +923,19 @@ function buildHtmlOfferFullSize(pOferta) {
     if (userNav.type === "noReg" || userNav.type === "regUser") {
         var offerId = pOferta.id;
         // se agrega el id de oferta como parametro data-offerId al boton reserva y al boton favorito de cada oferta
-        
-        
-        
         var idResDateInicio = "resDateInicio_" + offerId;
         //var valueDateInicioOferta = fechaFormatoDiaMesAnioConBarras(pOferta.startDate);
         var labelDe = "<label>Desde:</label>";
-        var inputResInicio = '<input id="'+ idResDateInicio +'"type="text" class="inputDate" placeholder="fecha de inicio"/>';
+        var inputResInicio = '<input id="' + idResDateInicio + '"type="text" class="inputDate" placeholder="fecha de inicio"/>';
         var labelHasta = "<label>Hasta:</label>";
         var idResDateFin = "resDateFin_" + offerId;
         //var valueDateFinOferta = fechaFormatoDiaMesAnioConBarras(pOferta.endDate);
-        var inputResFin = '<input id="'+idResDateFin+'"type="text" class="inputDate" placeholder="fecha de fin"/>';
+        var inputResFin = '<input id="' + idResDateFin + '"type="text" class="inputDate" placeholder="fecha de fin"/>';
         resButton = '<button onclick="reservaClicked(this)" data-offerid="' + offerId + '">Reserva</button>';
         var idResP = "paragraphReserva_" + offerId;
-        var paragraphReserva = '<p id="'+idResP+'"></p>';
-        var reservaAcordeon = '<div class="accordionDiv"><h3>Reservar</h3><div>' + labelDe +inputResInicio +  labelHasta + inputResFin + resButton + paragraphReserva + '</div></div>';
-        
+        var paragraphReserva = '<p id="' + idResP + '"></p>';
+        var reservaAcordeon = '<div class="accordionDiv"><h3>Reservar</h3><div>' + labelDe + inputResInicio + labelHasta + inputResFin + resButton + paragraphReserva + '</div></div>';
+
         favButton = '<button onclick="favoritoClicked(this)" data-offerid="' + offerId + '">Marcar Favorito</button>';
     }
 

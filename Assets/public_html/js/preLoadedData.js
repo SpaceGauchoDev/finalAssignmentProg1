@@ -17,9 +17,10 @@ function construirYAgregarOfertasPreCargadas() {
         endDate: startEndAddedDates1[1], // fecha de fin del periodo valido cuando se puede reservar para obtener el beneficio de la oferta                
         addedDate: startEndAddedDates1[2]}; // fecha en que la oferta fue agregada a la lista de ofertas, para ordenamiento de ofertas no destacadas
 
+
     var startEndAddedDates2 = randomStartEndAddedDates(18, 3, 14);
     var oferta2 = {
-        id: nuevoIdUnico(ofertasPreCargadas),
+        id: 1111,
         featured: 1,
         active: false,
         timesBooked: 0,
@@ -30,7 +31,7 @@ function construirYAgregarOfertasPreCargadas() {
         perNightPrice: 13,
         startDate: startEndAddedDates2[0],
         endDate: startEndAddedDates2[1],     
-        addedDate: startEndAddedDates2[2]};
+addedDate: startEndAddedDates2[2]};
 
     var startEndAddedDates3 = randomStartEndAddedDates(3, 12, 6);
     var oferta3 = {
@@ -50,7 +51,7 @@ function construirYAgregarOfertasPreCargadas() {
     var startEndAddedDates4 = randomStartEndAddedDates(5, 15, 1);
     var oferta4 = {
         id: nuevoIdUnico(ofertasPreCargadas),
-		featured: 14,
+	featured: 14,
         active: false,
         timesBooked: 0,
         displayName: "Dazzler Montevideo",
