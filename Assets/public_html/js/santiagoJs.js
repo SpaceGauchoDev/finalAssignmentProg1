@@ -129,10 +129,19 @@ function cargarDestacados() {
         if (userNav.type === 'admin') {
             txtOferta += "<p>ID: " + value.id + "<p>";
         }
-
+        
+        // si estamos en modo ordenar destacados agrega botones de flechas
+        var botonesFlechas = "";
+        if (userNav.currentMode === 'ordenDestacados') {
+            botonesFlechas += '<br><button onclick="destacadoToTop(this)" data-offerid="' + value.id + '">⇈</button>';
+            botonesFlechas += '<button onclick="destacadoSube(this)" data-offerid="' + value.id + '">↑</button>';
+            botonesFlechas += '<button onclick="destacadoBaja(this)" data-offerid="' + value.id + '">↓</button>';            
+            botonesFlechas += '<button onclick="destacadoToBot(this)" data-offerid="' + value.id + '">⇊</button>';
+        }
+        
         var botonVerOferta = '<br><button onclick="verOferta(this)" data-offerid="' + value.id + '">Ver oferta</button>';
         //txtOferta += "<h4><a href='javascript;' onclick='verOferta(this)' data-reserveid='4'>" + oferta.displayName + "</a></h4>";
-        txtOferta += botonVerOferta;
+        txtOferta += botonVerOferta + botonesFlechas;
         txtOferta += "</div>";
         txtOferta += "</div>";
     });
@@ -147,6 +156,8 @@ function sortDestacados(arr) {
     return arr;
 }
 
+// esto devolvia de mayor a menor
+/*
 function sortOfers(pA, pB) {
     var order = 0;
     if (pA.featured > pB.featured) {
@@ -157,4 +168,16 @@ function sortOfers(pA, pB) {
     }
     return order;
 }
- 
+*/
+
+// esto devuelve de menor a mayor
+function sortOfers(pA, pB) {
+    var order = 0;
+    if (pA.featured < pB.featured) {
+        order = -1;
+    }
+    if (pA.featured > pB.featured) {
+        order = 1;
+    }
+    return order;
+}

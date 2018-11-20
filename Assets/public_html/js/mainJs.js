@@ -24,7 +24,7 @@ function inicialSetUp() {
     construirYAgregarOfertasPreCargadas();
     construirYAgregarReservasPreCargadas(65); // el parametro es la probabilidad de reserva que tiene cada usuario pre cargado, -1 para ninguna reserva autogenerada
     mostrarTop5();
-    construirUsuarioParaNavegacion(0, "ordenDestacados");
+    construirUsuarioParaNavegacion(1, "ordenDestacados");
     updateDisplay('full');
 }
 

@@ -415,6 +415,7 @@ function updateWorkingOfferAndPreview() {
 }
 
 function getNumberOfFeaturedOffers() {
+    fixDestacadosOrder();
     var cont = 0;
     for (var i = 0; i < ofertasPreCargadas.length; i++) {
         if (ofertasPreCargadas[i].featured !== -1) {
@@ -443,25 +444,25 @@ function aplicarDatosClicked() {
             }
         }
     }
-    if (currentMode === 'editar'){
+    if (currentMode === 'editar') {
         if (ofertaEditable.length > 0) {
             if (ofertaEditadaExitosamente) {
                 var searchForOffer = getArrayIndexFromId(ofertaEditable[0].id, ofertasPreCargadas);
                 ofertasPreCargadas[searchForOffer] = ofertaEditable[0];
                 /*
-                ofertasPreCargadas[searchForOffer].id = ofertaEditable[0].id;
-                ofertasPreCargadas[searchForOffer].featured = ofertaEditable[0].featured;
-                ofertasPreCargadas[searchForOffer].active = ofertaEditable[0].active;
-                ofertasPreCargadas[searchForOffer].timesBooked = ofertaEditable[0].timesBooked;
-                ofertasPreCargadas[searchForOffer].displayName = ofertaEditable[0].displayName;
-                ofertasPreCargadas[searchForOffer].geoLocation = ofertaEditable[0].geoLocation;
-                ofertasPreCargadas[searchForOffer].imageUrl = ofertaEditable[0].imageUrl;
-                ofertasPreCargadas[searchForOffer].housingType = ofertaEditable[0].housingType;
-                ofertasPreCargadas[searchForOffer].perNightPrice = ofertaEditable[0].perNightPrice;
-                ofertasPreCargadas[searchForOffer].startDate = ofertaEditable[0].startDate;
-                ofertasPreCargadas[searchForOffer].endDate = ofertaEditable[0].endDate;
-                ofertasPreCargadas[searchForOffer].addedDate = ofertaEditable[0].addedDate;
-                */
+                 ofertasPreCargadas[searchForOffer].id = ofertaEditable[0].id;
+                 ofertasPreCargadas[searchForOffer].featured = ofertaEditable[0].featured;
+                 ofertasPreCargadas[searchForOffer].active = ofertaEditable[0].active;
+                 ofertasPreCargadas[searchForOffer].timesBooked = ofertaEditable[0].timesBooked;
+                 ofertasPreCargadas[searchForOffer].displayName = ofertaEditable[0].displayName;
+                 ofertasPreCargadas[searchForOffer].geoLocation = ofertaEditable[0].geoLocation;
+                 ofertasPreCargadas[searchForOffer].imageUrl = ofertaEditable[0].imageUrl;
+                 ofertasPreCargadas[searchForOffer].housingType = ofertaEditable[0].housingType;
+                 ofertasPreCargadas[searchForOffer].perNightPrice = ofertaEditable[0].perNightPrice;
+                 ofertasPreCargadas[searchForOffer].startDate = ofertaEditable[0].startDate;
+                 ofertasPreCargadas[searchForOffer].endDate = ofertaEditable[0].endDate;
+                 ofertasPreCargadas[searchForOffer].addedDate = ofertaEditable[0].addedDate;
+                 */
                 messageToUser("Estado inactivo: oferta id " + ofertaEditable[0].id + " modificada con exito, para crear una nueva oferta presionar botón <b>Nueva Oferta</b>.");
                 enableDataInputFields(false);
             }
@@ -589,19 +590,135 @@ function construirInputDataEO() {
 //========================
 // EDITAR ORDEN DESTACADOS
 //VVVVVVVVVVVVVVVVVVVVVVVV
-function construirEditarOrdenDestacados(){
+function construirEditarOrdenDestacados() {
+
+
+    fixDestacadosOrder();
     var htmlDestacados = cargarDestacados();
     var tituloDestacadas = "<h3>Destacadas<h3>";
 
-    
+
     $("#mainDiv").html(tituloDestacadas + htmlDestacados);
 }
 
 
+function fixDestacadosOrder() {
+    var arrayDestacados = getDestacados();
+    arrayDestacados = sortDestacados(arrayDestacados);
 
 
+    for (var i = 0; i < arrayDestacados.length; i++) {
+        var ordenOriginal = arrayDestacados[i].featured;
+        arrayDestacados[i].featured = i;
+        console.log("Array destacado orden original: " + ordenOriginal + ", array destacado orden arreglado: " + arrayDestacados[i].featured);
+    }
 
 
+}
+
+function destacadoSube(btn) {
+    // si vemos el array de destacadas como ofertas A, B, C, y D con sus respectivos valores de featured despues de pasar por fixDestacadosOrder();
+    // arrayFeatured(A0, B1, C2, D3);
+    // usuario presiona flecha arriba en oferta C
+    // arrayFeatured(A0, C1, B2, D3);
+
+    // consigo la posicion de C en el array destacados ordenado
+    var offerId = parseInt(btn.getAttribute("data-offerid"));
+    var arrayDestacados = getDestacados();
+    arrayDestacados = sortDestacados(arrayDestacados);
+    var offerIndexC = getArrayIndexFromId(offerId, arrayDestacados);
+    
+    
+    // si el la oferta que se quiere subir esta primera, no hacemos nada
+    if (offerIndexC !== 0) {
+        var offerIndexB = offerIndexC - 1;
+
+        arrayDestacados[offerIndexC].featured = arrayDestacados[offerIndexC].featured - 1;
+        arrayDestacados[offerIndexB].featured = arrayDestacados[offerIndexB].featured + 1;
+        updateDisplay('full');
+    } else {
+        console.log("error: usuario quiere subir la primer oferta mas arriba del primer lugar");
+    }
+}
+
+function destacadoBaja(btn) {
+    // si vemos el array de destacadas como ofertas A, B, C, y D con sus respectivos valores de featured despues de pasar por fixDestacadosOrder();
+    // arrayFeatured(A0, B1, C2, D3);
+    // usuario presiona flecha abajo en oferta B
+    // arrayFeatured(A0, C1, B2, D3);
+    
+    // consigo la posicion de B en el array destacados ordenado
+    var offerId = parseInt(btn.getAttribute("data-offerid"));
+    var arrayDestacados = getDestacados();
+    arrayDestacados = sortDestacados(arrayDestacados);
+    var offerIndexB = getArrayIndexFromId(offerId, arrayDestacados);
+
+    // si el la oferta que se quiere bajar esta ultima, no hacemos nada
+    if (offerIndexB !== arrayDestacados.length - 1) {
+        var offerIndexC = offerIndexB + 1;
+
+        arrayDestacados[offerIndexB].featured = arrayDestacados[offerIndexB].featured + 1;
+        arrayDestacados[offerIndexC].featured = arrayDestacados[offerIndexC].featured - 1;
+        updateDisplay('full');
+
+    }else{
+         console.log("error: usuario quiere bajar la ultima oferta mas abajo del ultimo lugar");
+    }
+}
+
+function destacadoToTop(btn) {
+    // si vemos el array de destacadas como ofertas A, B, C, y D con sus respectivos valores de featured despues de pasar por fixDestacadosOrder();
+    // arrayFeatured(A0, B1, C2, D3);
+    // usuario presiona flecha doble arriba en oferta C
+    // arrayFeatured(C0, A1, B2, D3);  
+    
+    // consigo la posicion de C en el array destacados ordenado
+    var offerId = parseInt(btn.getAttribute("data-offerid"));
+    var arrayDestacados = getDestacados();
+    arrayDestacados = sortDestacados(arrayDestacados);
+    var offerIndexC = getArrayIndexFromId(offerId, arrayDestacados);
+    
+    // si el la oferta que se quiere subir al principio es la primera, no hacemos nada
+    if (offerIndexC !== 0) {
+        // aumento el indice de destacados de todas las ofertas en 1
+        for (var i = 0; i < arrayDestacados.length; i++){
+            arrayDestacados[i].featured = arrayDestacados[i].featured +1;
+        }
+        // cambio el indice de destacado de la oferta seleccionada a 0
+        arrayDestacados[offerIndexC].featured = 0;
+
+        //arreglo el array de destacados
+        arrayDestacados = sortDestacados(arrayDestacados);
+        updateDisplay('full'); 
+    }else{
+        console.log("error: usuario quiere subir primer oferta al principio");
+    }
+}
+
+function destacadoToBot(btn) {
+    // si vemos el array de destacadas como ofertas A, B, C, y D con sus respectivos valores de featured despues de pasar por fixDestacadosOrder();
+    // arrayFeatured(A0, B1, C2, D3);
+    // usuario presiona flecha doble abajo en oferta B
+    // arrayFeatured(A0, C1, D2, B3);  
+    
+    // consigo la posicion de B en el array destacados ordenado
+    var offerId = parseInt(btn.getAttribute("data-offerid"));
+    var arrayDestacados = getDestacados();
+    arrayDestacados = sortDestacados(arrayDestacados);
+    var offerIndexB = getArrayIndexFromId(offerId, arrayDestacados);
+    
+    // si el la oferta que se quiere bajar al final es la ultima, no hacemos nada
+    if (offerIndexB !== arrayDestacados.length - 1) {
+        // aumento el indice de destacado de la oferta seleccionada, a el indice de destacado de la ultima mas uno
+        arrayDestacados[offerIndexB].featured = arrayDestacados[arrayDestacados.length - 1].featured + 1;
+
+        //arreglo el array de destacados
+        arrayDestacados = sortDestacados(arrayDestacados);
+        updateDisplay('full'); 
+    }else{
+        console.log("error: usuario quiere subir primer oferta al principio");
+    }
+}
 
 // ^^^^^^^^^^^^^^^^^^^^^^^
 // EDITAR ORDEN DESTACADOS
