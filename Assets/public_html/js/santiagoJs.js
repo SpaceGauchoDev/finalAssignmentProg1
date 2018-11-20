@@ -129,6 +129,11 @@ function cargarDestacados() {
         if (userNav.type === 'admin') {
             txtOferta += "<p>ID: " + value.id + "<p>";
         }
+        // muestra el boton de favorito si el usuario no es administrador
+        var botonFavoritear = "";
+        if(userNav.type !== 'admin'){
+            botonFavoritear = '<br><button onclick="favoritoClicked(this)" data-offerid="' + value.id + '">Favorito</button>';
+        }
         
         // si estamos en modo ordenar destacados agrega botones de flechas
         var botonesFlechas = "";
@@ -141,7 +146,7 @@ function cargarDestacados() {
         
         var botonVerOferta = '<br><button onclick="verOferta(this)" data-offerid="' + value.id + '">Ver oferta</button>';
         //txtOferta += "<h4><a href='javascript;' onclick='verOferta(this)' data-reserveid='4'>" + oferta.displayName + "</a></h4>";
-        txtOferta += botonVerOferta + botonesFlechas;
+        txtOferta += botonFavoritear + botonVerOferta + botonesFlechas;
         txtOferta += "</div>";
         txtOferta += "</div>";
     });

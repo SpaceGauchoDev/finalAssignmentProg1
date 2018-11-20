@@ -9,8 +9,6 @@ var reservasPreCargadas;
 var userNav;
 var ofertaEditadaExitosamente;
 
-
-
 function inicialSetUp() {
     ofertas = new Array();
     ofertaEditable = new Array();
@@ -22,9 +20,12 @@ function inicialSetUp() {
 
     construirYAgregarUsuariosPreCargados();
     construirYAgregarOfertasPreCargadas();
-    construirYAgregarReservasPreCargadas(65); // el parametro es la probabilidad de reserva que tiene cada usuario pre cargado, -1 para ninguna reserva autogenerada
+    // el primer parametro es la probabilidad de reserva que tiene cada usuario pre cargado, -1 para ninguna reserva autogenerada
+    // el segundo parametro es la probabilidad de favoriteo para ofertas no reservadas que tiene cada usuario pre cargado, -1 para ninguna favorito autogenerado
+    construirYAgregarReservasPreCargadas(65, 85); 
+                                                 
     mostrarTop5();
-    construirUsuarioParaNavegacion(2, "administracion");
+    construirUsuarioParaNavegacion(0, "favoritos");
     updateDisplay('full');
 }
 
@@ -79,6 +80,7 @@ function updateDisplay(pString) {
                 break;
             case "favoritos":
                 console.log("display: favoritos");
+                construirVerFavoritas();
                 break;
             case "estadoDeCuenta":
                 console.log("display: estadoDeCuenta");
@@ -741,6 +743,13 @@ function registerClicked() {
 // ======================
 // FAVORITOS
 // VVVVVVVVVVVVVVVVVVVVVV
+function unFavoriteClicked(favoritoBtn) {
+    var offerId = parseInt(favoritoBtn.getAttribute("data-offerid"));
+    console.log("usuario clickeo quitar de favoritos oferta: " + offerId);
+    removeFromUserFavoritesList(userNav.id, offerId);
+    updateDisplay('full');
+}
+
 function favoritoClicked(favoritoBtn) {
     var offerId = parseInt(favoritoBtn.getAttribute("data-offerid"));
     console.log("usuario clickeo favoritear oferta: " + offerId);
@@ -752,6 +761,39 @@ function favoritoClicked(favoritoBtn) {
         var userId = userNav.id;
         addToUserFavoritesList(userId, offerId);
     }
+}
+
+function removeExpiredOffersFromUserFavoritedList(pUserId){
+    var userIndexPos = getArrayIndexFromId(pUserId, usuariosPreCargados);
+    var oldUserFavoritedArray = usuariosPreCargados[userIndexPos].favorited;
+    var newUserFavoritedArray = new Array();
+    var currentDate = new Date();
+    
+    for (var i =0; i< oldUserFavoritedArray.length; i++){
+        //checkeo si las ofertas en el array de favoritos viejos, no estan expiradas
+        var offerIndexPos = getArrayIndexFromId(oldUserFavoritedArray[i], ofertasPreCargadas);
+        var offerEndDate = ofertasPreCargadas[offerIndexPos].endDate;
+        if(currentDate < offerEndDate){
+            newUserFavoritedArray.push(oldUserFavoritedArray[i]);
+        }else{
+            console.log("oferta retirada por expirada");
+        }
+    }   
+    usuariosPreCargados[userIndexPos].favorited = newUserFavoritedArray;   
+}
+
+function removeFromUserFavoritesList(pUserId, pOfferId){
+    var userIndexPos = getArrayIndexFromId(pUserId, usuariosPreCargados);
+    var oldUserFavoritedArray = usuariosPreCargados[userIndexPos].favorited;
+    var newUserFavoritedArray = new Array();
+    
+    for (var i =0; i< oldUserFavoritedArray.length; i++){
+        if(oldUserFavoritedArray[i] !== pOfferId){
+            newUserFavoritedArray.push(oldUserFavoritedArray[i]);
+        } 
+    }
+    
+    usuariosPreCargados[userIndexPos].favorited = newUserFavoritedArray;
 }
 
 function addToUserFavoritesList(pUserId, pOfferId) {
@@ -786,6 +828,70 @@ function addToUserFavoritesList(pUserId, pOfferId) {
         console.log("Error, user not found at addToUserFavoritesList");
     }
 }
+
+
+function construirVerFavoritas(){
+    removeExpiredOffersFromUserFavoritedList(userNav.id);
+    var ofertasFavoritas = cargarFavoritas();
+    $("#mainDiv").html(ofertasFavoritas);
+}
+
+function cargarFavoritas() {
+    var arrayFavoritas = getFavoritas();
+    
+    var txtOfertas = "<h3>Favoritas<h3><div class='contenedorFavoritas'>";
+    $.each(arrayFavoritas, function (index, value) {
+        txtOfertas += "<div class='oferta'>";
+        txtOfertas += "<div class='imagenOferta'>";
+        txtOfertas += "<img style='width:100px; height:100px;' src='" + value.imageUrl + "' >";
+        txtOfertas += "</div>";
+
+        txtOfertas += "<div class='ofertaInfo'>";
+        txtOfertas += "<h4>" + value.displayName + "<h4>";
+        txtOfertas += "<p>Tipo: " + value.housingType + "<p>";
+        txtOfertas += "<p>Dirección: " + value.geoLocation + "<p>";
+        
+        // muestra el boton de favorito si el usuario no es administrador, puede ser un checkeo redundante
+        // ya que administrador y usuarios no registrados no pueden acceder a este modo 
+        var botonDesFavoritear = "";
+        if(userNav.type !== 'admin'){
+            botonDesFavoritear = '<br><button onclick="unFavoriteClicked(this)" data-offerid="' + value.id + '">Quitar De Favoritos</button>';
+        }
+    
+        var botonVerOferta = '<br><button onclick="verOferta(this)" data-offerid="' + value.id + '">Ver oferta</button>';
+        txtOfertas += botonDesFavoritear + botonVerOferta;
+        txtOfertas += "</div>";
+        txtOfertas += "</div>";
+    });
+    txtOfertas += "</div>";
+    return txtOfertas;
+}
+
+function getFavoritas(){
+    // creamos un array donde guardaremos los objetos ofertas favoritas del usuario actual
+    var arrayOfertasFavoritas = new Array();
+    
+    // consegimos el index pos del usuario actual en el array de usuarios
+    var userIndexPos  = getArrayIndexFromId(userNav.id, usuariosPreCargados);
+    
+    // consegimos su array de ids de ofertas favoriteadas
+    var userFavoritedOfferIdArray = usuariosPreCargados[userIndexPos].favorited;
+    
+    // recorremos todos los ids de ofertas favoriteadas para agregarlas al array de ofertas favoritas
+    for (i = 0; i<userFavoritedOfferIdArray.length; i++){
+        var ofertaIndexPos = getArrayIndexFromId(userFavoritedOfferIdArray[i], ofertasPreCargadas);
+        arrayOfertasFavoritas.push(ofertasPreCargadas[ofertaIndexPos]);
+    }
+    
+    // devolvemos el array con objetos de ofertas favoritas
+    return arrayOfertasFavoritas;
+}
+
+
+
+
+
+
 // ^^^^^^^^^^^^^^^^^^^^^^
 // FAVORITOS
 // ======================
@@ -873,6 +979,7 @@ function userHasReservedThisOffer(pUserId, pOfferId) {
 // ^^^^^^^^^^^^^^^^^^^^^^
 // RESERVAS
 // ======================
+
 function mostrarOfertasPrecargadas() {
     var ofertasNoDestacadas = cargarNoDestacados();
     var ofertasDestacadas = cargarDestacados();
@@ -908,15 +1015,25 @@ function cargarNoDestacados() {
         // muestra el id de oferta si el usuario es administrador para ayudar a buscar editar ofertas especificas
         if(userNav.type === 'admin'){
             txtOfertas += "<p>ID: " + value.id + "<p>";
-        }        
+        }
+        
+        // muestra el boton de favorito si el usuario no es administrador
+        var botonFavoritear = "";
+        if(userNav.type !== 'admin'){
+            botonFavoritear = '<br><button onclick="favoritoClicked(this)" data-offerid="' + value.id + '">Favorito</button>';
+        }
         var botonVerOferta = '<br><button onclick="verOferta(this)" data-offerid="' + value.id + '">Ver oferta</button>';
-        txtOfertas += botonVerOferta;
+        txtOfertas += botonFavoritear + botonVerOferta;
         txtOfertas += "</div>";
         txtOfertas += "</div>";
     });
     txtOfertas += "</div>";
     return txtOfertas;
 }
+
+
+
+
 
 
 function buildHtmlOfferFullSize(pOferta) {

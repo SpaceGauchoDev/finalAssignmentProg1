@@ -83,9 +83,8 @@ addedDate: startEndAddedDates2[2]};
 
 
 function construirYAgregarUsuariosPreCargados() {
-    //var _edad = new Date();
-    var _favorited = new Array();
-    
+
+    var favorited_1 = new Array();
     var usuario1 = {
         id: nuevoIdUnico(usuariosPreCargados), //id unico generado para cada usuario
         type: "admin", // tipo de usuario puede ser "admin", "regUser" 
@@ -95,8 +94,9 @@ function construirYAgregarUsuariosPreCargados() {
         email: "SebastiánPerez@proveedorDeEmail.com", // email que el usuario ingresa
         edad: 18, // fecha de nacimiento que el usuario ingresa
         password: "1111", // contraseña que el usuario ingresa
-        favorited: _favorited}; // array con los id's de las ofertas que el usuario ha marcado como favoritas
+        favorited: favorited_1}; // array con los id's de las ofertas que el usuario ha marcado como favoritas
     
+    var favorited_2 = new Array();
     var usuario2 = {
         id: nuevoIdUnico(usuariosPreCargados),
         type: "regUser",
@@ -106,9 +106,9 @@ function construirYAgregarUsuariosPreCargados() {
         email: "DiegoGomez@proveedorDeEmail.com",
         edad: 18,
         password: "2222",
-        favorited: _favorited};
+        favorited: favorited_2};
     
-    
+    var favorited_3 = new Array();
     var usuario3 = {
         id: nuevoIdUnico(usuariosPreCargados),
         type: "regUser",
@@ -118,9 +118,9 @@ function construirYAgregarUsuariosPreCargados() {
         email: "GabrielSosa@proveedorDeEmail.com",
         edad: 18,
         password: "2222",
-        favorited: _favorited};
+        favorited: favorited_3};
     
-    
+    var favorited_4 = new Array();
     var usuario4 = {
         id: nuevoIdUnico(usuariosPreCargados),
         type: "regUser",
@@ -130,8 +130,9 @@ function construirYAgregarUsuariosPreCargados() {
         email: "MarianaRomero@proveedorDeEmail.com",
         edad: 18,
         password: "2222",
-        favorited: _favorited};
+        favorited: favorited_4};
     
+    var favorited_5 = new Array();
     var usuario5 = {
         id: 1,
         type: "admin",
@@ -141,8 +142,9 @@ function construirYAgregarUsuariosPreCargados() {
         email: "a@",
         edad: 18,
         password: "1234",
-        favorited: _favorited};
+        favorited: favorited_5};
     
+    var favorited_6 = new Array();
     var usuario6 = {
         id: 2,
         type: "regUser",
@@ -152,7 +154,7 @@ function construirYAgregarUsuariosPreCargados() {
         email: "r@",
         edad: 18,
         password: "1234",
-        favorited: _favorited};
+        favorited: favorited_6};
     
     
     usuariosPreCargados.push(usuario1, usuario2, usuario3, usuario4, usuario5, usuario6);
@@ -166,7 +168,7 @@ function construirYAgregarUsuariosPreCargados() {
     // 5- si reserva la oferta, lo hace por un numero de dias aleatorio con piso en 1 y maximo en el numero de días maximo que dura la oferta
     // 6- se genera un nuevo objeto reserva con todos los datos que se desprenden de la informacion hasta este punto
     // 7- si no reserva la oferta, pasa a evaluar la siguiente, hasta recorrer todo el array de ofertas
-function construirYAgregarReservasPreCargadas(pChanceDeReserva) {
+function construirYAgregarReservasPreCargadas(pChanceDeReserva, pChanceDeFavoriteo) {
     // 1- recorremos el array de usuarios pre-cargados 
     for (var i = 0; i < usuariosPreCargados.length; i++){
         // 2- si el usuario es admin, lo salteamos
@@ -200,7 +202,14 @@ function construirYAgregarReservasPreCargadas(pChanceDeReserva) {
                     status: newStatus // desaprobada, pendiente, aprobada
                 };
                 //console.log("Nombre: " + ofertasPreCargadas[j].displayName + " Ini res: " + startDate_.toDateString() + " Fin res: " + endDate_.toDateString());
+                //console.log('usuario: ' + usuariosPreCargados[i].id +  ' reserva: ' + ofertasPreCargadas[j].id);
                 reservasPreCargadas.push(reserva);              
+                }else{
+                    // si el usuario no hace una reserva, se considera si la agrega a su lista de favoritos
+                    if(decideFavoritear(pChanceDeFavoriteo)){
+                        usuariosPreCargados[i].favorited.push(ofertasPreCargadas[j].id);
+                        //console.log('usuario: ' + usuariosPreCargados[i].id +  ' favoritea: ' + ofertasPreCargadas[j].id +' nombre: ' + ofertasPreCargadas[j].displayName);
+                    }
                 }
             // 7- si no reserva la oferta, pasa a evaluar la siguiente
             }          
@@ -271,6 +280,17 @@ function decideReservar(pPorcentaje){
     }
     return result;
 }
+
+function decideFavoritear(pPorcentaje){
+    var result = false;
+    if(pPorcentaje !== -1){
+        if (Math.random() * 100 <= pPorcentaje) {
+        result = true;
+        }
+    }
+    return result;
+}
+
 
 function randomStartEndAddedDates(pMaxStartDelay, pMaxDifference, pMaxDaysSinceItWasAdded){
     var result = new Array();
