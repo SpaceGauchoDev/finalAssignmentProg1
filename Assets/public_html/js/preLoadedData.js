@@ -19,7 +19,8 @@ function construirYAgregarOfertasPreCargadas() {
 
     var startEndAddedDates2 = randomStartEndAddedDates(18, 3, 14);
     var oferta2 = {
-        id: nuevoIdUnico(ofertasPreCargadas),
+        //id: nuevoIdUnico(ofertasPreCargadas),
+        id: 1111,
         featured: -1,
         active: true,
         timesBooked: 0,

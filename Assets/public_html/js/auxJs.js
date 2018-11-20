@@ -33,6 +33,21 @@ function isSpanishLanguageLetter(pStr) {
     return result;
 }
 
+function isValidDateInput(pInputDate){
+    var result = true;
+    var foundErrors = 0;
+    for (var i = 0; i<pInputDate.length; i++){
+        if(pInputDate.charCodeAt(i) < 47 || pInputDate.charCodeAt(i) > 59){
+            foundErrors++;
+        }
+    }
+    
+    if(foundErrors>0){
+        result = false;
+    }
+    return result;    
+}
+
 
 function notEmptyString(pString) {
     var result = false;
