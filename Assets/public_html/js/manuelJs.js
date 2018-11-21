@@ -627,8 +627,8 @@ function destacadoSube(btn) {
     var arrayDestacados = getDestacados();
     arrayDestacados = sortDestacados(arrayDestacados);
     var offerIndexC = getArrayIndexFromId(offerId, arrayDestacados);
-    
-    
+
+
     // si el la oferta que se quiere subir esta primera, no hacemos nada
     if (offerIndexC !== 0) {
         var offerIndexB = offerIndexC - 1;
@@ -646,7 +646,7 @@ function destacadoBaja(btn) {
     // arrayFeatured(A0, B1, C2, D3);
     // usuario presiona flecha abajo en oferta B
     // arrayFeatured(A0, C1, B2, D3);
-    
+
     // consigo la posicion de B en el array destacados ordenado
     var offerId = parseInt(btn.getAttribute("data-offerid"));
     var arrayDestacados = getDestacados();
@@ -661,8 +661,8 @@ function destacadoBaja(btn) {
         arrayDestacados[offerIndexC].featured = arrayDestacados[offerIndexC].featured - 1;
         updateDisplay('full');
 
-    }else{
-         console.log("error: usuario quiere bajar la ultima oferta mas abajo del ultimo lugar");
+    } else {
+        console.log("error: usuario quiere bajar la ultima oferta mas abajo del ultimo lugar");
     }
 }
 
@@ -671,26 +671,26 @@ function destacadoToTop(btn) {
     // arrayFeatured(A0, B1, C2, D3);
     // usuario presiona flecha doble arriba en oferta C
     // arrayFeatured(C0, A1, B2, D3);  
-    
+
     // consigo la posicion de C en el array destacados ordenado
     var offerId = parseInt(btn.getAttribute("data-offerid"));
     var arrayDestacados = getDestacados();
     arrayDestacados = sortDestacados(arrayDestacados);
     var offerIndexC = getArrayIndexFromId(offerId, arrayDestacados);
-    
+
     // si el la oferta que se quiere subir al principio es la primera, no hacemos nada
     if (offerIndexC !== 0) {
         // aumento el indice de destacados de todas las ofertas en 1
-        for (var i = 0; i < arrayDestacados.length; i++){
-            arrayDestacados[i].featured = arrayDestacados[i].featured +1;
+        for (var i = 0; i < arrayDestacados.length; i++) {
+            arrayDestacados[i].featured = arrayDestacados[i].featured + 1;
         }
         // cambio el indice de destacado de la oferta seleccionada a 0
         arrayDestacados[offerIndexC].featured = 0;
 
         //arreglo el array de destacados
         arrayDestacados = sortDestacados(arrayDestacados);
-        updateDisplay('full'); 
-    }else{
+        updateDisplay('full');
+    } else {
         console.log("error: usuario quiere subir primer oferta al principio");
     }
 }
@@ -700,13 +700,13 @@ function destacadoToBot(btn) {
     // arrayFeatured(A0, B1, C2, D3);
     // usuario presiona flecha doble abajo en oferta B
     // arrayFeatured(A0, C1, D2, B3);  
-    
+
     // consigo la posicion de B en el array destacados ordenado
     var offerId = parseInt(btn.getAttribute("data-offerid"));
     var arrayDestacados = getDestacados();
     arrayDestacados = sortDestacados(arrayDestacados);
     var offerIndexB = getArrayIndexFromId(offerId, arrayDestacados);
-    
+
     // si el la oferta que se quiere bajar al final es la ultima, no hacemos nada
     if (offerIndexB !== arrayDestacados.length - 1) {
         // aumento el indice de destacado de la oferta seleccionada, a el indice de destacado de la ultima mas uno
@@ -714,8 +714,8 @@ function destacadoToBot(btn) {
 
         //arreglo el array de destacados
         arrayDestacados = sortDestacados(arrayDestacados);
-        updateDisplay('full'); 
-    }else{
+        updateDisplay('full');
+    } else {
         console.log("error: usuario quiere subir primer oferta al principio");
     }
 }
@@ -738,7 +738,8 @@ function construirAdministracion() {
     htmlCeldaRegister += '<p></p>';
     htmlCeldaRegister += '<label for="edadModifyField" >Edad: </label><input id="edadModifyField" type="text"/>' + "<br>";
     htmlCeldaRegister += '<p></p>';
-    htmlCeldaRegister += '<label for="emailModifyField" >Email: </label><input id="emailModifyField" type="text"/>' + "<br>";;
+    htmlCeldaRegister += '<label for="emailModifyField" >Email: </label><input id="emailModifyField" type="text"/>' + "<br>";
+    ;
     htmlCeldaRegister += '<p></p>';
     htmlCeldaRegister += '<hr>';
     htmlCeldaRegister += '<label for="oldPasswordModifyField" >Contraseña Anterior: </label><input id="oldPasswordModifyField" type="password"/>' + "<br>";
@@ -751,7 +752,7 @@ function construirAdministracion() {
     htmlCeldaRegister += '<button onclick="updateUserDataClicked()">Aplicar</button>';
     htmlCeldaRegister += '<p></p>';
     htmlCeldaRegister += '<div id="messageToUserModifyData"></div>';
-    
+
 
     htmlBody += "<table><tr><th>Datos de Usuario</th></th>";
     htmlBody += "<tr><td>" + htmlCeldaRegister + "</td></tr></table>";
@@ -761,10 +762,10 @@ function construirAdministracion() {
 }
 
 
-function cargarDatosExitentes(){
+function cargarDatosExitentes() {
     var userId = userNav.id;
     var userIdIndex = getArrayIndexFromId(userId, usuariosPreCargados);
-    
+
     $("#nameModifyField").val(usuariosPreCargados[userIdIndex].name);
     $("#lastNameModifyField").val(usuariosPreCargados[userIdIndex].lastName);
     $("#edadModifyField").val(usuariosPreCargados[userIdIndex].edad);
@@ -775,21 +776,21 @@ function cargarDatosExitentes(){
 }
 
 
-function updateUserDataClicked(){
+function updateUserDataClicked() {
     console.log("i get clicked");
-    
+
     var inputName = $("#nameModifyField").val();
     var inputLastName = $("#lastNameModifyField").val();
     var inputEmail = $("#emailModifyField").val();
     var inputEdad = $("#edadModifyField").val();
-    
+
     var inputOldPass = $("#oldPasswordModifyField").val();
-    var inputNewPass = $("#newPasswordModifyField").val();    
+    var inputNewPass = $("#newPasswordModifyField").val();
     var inputNewPassRep = $("#newPasswordCheckModifyField").val();
-    
+
     var userArrayIndex = getArrayIndexFromId(userNav.id, usuariosPreCargados);
-   
-   var fullMsg = "";
+
+    var fullMsg = "";
 
     var msgN = "";
     var msgL = "";
@@ -848,37 +849,37 @@ function updateUserDataClicked(){
     // verificamos de la fecha de nacimiento
     inputEdad = myTrim(inputEdad);
     if (notEmptyString(inputEdad)) {
-        if(isNumber(inputEdad)){
+        if (isNumber(inputEdad)) {
             inputEdad = makeInt(inputEdad);
-            if(inputEdad >= 0 && inputEdad<130){
+            if (inputEdad >= 0 && inputEdad < 130) {
                 //EXITO
                 validationSuccess++;
-            }else{
-                 fullMsg += "<p>- Error en <b>Edad</b>, la edad solo puede ser un valor entre 0 y 130.</p>";
-            }            
-        }else{
+            } else {
+                fullMsg += "<p>- Error en <b>Edad</b>, la edad solo puede ser un valor entre 0 y 130.</p>";
+            }
+        } else {
             fullMsg += "<p>- Error en <b>Edad</b>, la edad solo puede ser numerica.</p>";
         }
     } else {
         fullMsg += "<p>- Error en <b>Edad</b>, la edad no puede estar vacía, intente nuevamente.</p>";
     }
-    
-    
+
+
     // verificamos que la contraseña vieja no este vacía
     if (notEmptyString(inputOldPass)) {
-        
-            
-        if(inputOldPass === usuariosPreCargados[userArrayIndex].password){
+
+
+        if (inputOldPass === usuariosPreCargados[userArrayIndex].password) {
             //EXITO
             validationSuccess++;
-        }else{
+        } else {
             fullMsg += "<p>- Error en <b>Contraseña anterior</b>, la contraseña anterior no coincide con la contraseña en archivo.</p>";
         }
 
     } else {
         fullMsg += "<p>- Error en <b>Contraseña anterior</b>, la contraseña anterior no puede estar vacía.</p>";
     }
-     
+
 
     // verificamos que la contrasena nueva no sea vacia
     inputNewPass = myTrim(inputNewPass);
@@ -888,7 +889,7 @@ function updateUserDataClicked(){
     } else {
         fullMsg += "<p>- Error en <b>Contraseña nueva</b>, la nueva contraseña no puede estar vacía.</p>";
     }
-    
+
     // verificamos que la confirmacion de la contraseña nueva sea igual a la contraseña nueva
     if (inputNewPass === inputNewPassRep) {
         //EXITO
@@ -896,19 +897,135 @@ function updateUserDataClicked(){
     } else {
         fullMsg += "<p>- Error en <b>Repetir Contraseña</b>, La repeticion de la nueva contraseña no coincide con la nueva contraseña ingresada.</p>";
     }
-    
-    if(validationSuccess === 7){
+
+    if (validationSuccess === 7) {
         usuariosPreCargados[userArrayIndex].name = inputName;
         usuariosPreCargados[userArrayIndex].lastName = inputLastName;
-        usuariosPreCargados[userArrayIndex].edad = inputEdad;        
+        usuariosPreCargados[userArrayIndex].edad = inputEdad;
         usuariosPreCargados[userArrayIndex].password = inputNewPass;
-        
+
         cargarDatosExitentes();
         fullMsg = "<p>Datos actualizados con exito.</p>" + fullMsg;
-    }else{
+    } else {
         fullMsg = "<p>Solucionar los siguientes errores e intentar de nuevo: </p>" + fullMsg;
     }
     $("#messageToUserModifyData").html(fullMsg);
+}
+
+// ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+// AUTO ADMINISTRACION DE DATOS
+//=============================
+
+
+//==============================
+// INFO DE RESERVAS PARA USUARIO
+//VVVVVVVVVVVVVVVVVVVVVVVVVVVVVV
+function construirReservasReg() {
+    // este array contiene OFERTAS para las cuales la reserva esta en estado pendiente, aprobada, o rechazada
+    var todasLasReservas = "";
+
+    var arrayReservas = getReservadas("todas");
+    todasLasReservas = cargarOfertasReservadas(arrayReservas);
+
+    $("#mainDiv").html(construirSelectDeFiltro() + todasLasReservas);
+    $("#selectModoDeFiltro").change(updateReservasReg);
+}
+
+function updateReservasReg() {
+    var selectorVal = $("#selectModoDeFiltro").val();
+
+    var reservasPendientes = "";
+    var reservasAprobadas = "";
+    var reservasRechazadas = "";
+    var todasLasReservas = "";
+
+    switch (selectorVal) {
+        case "aprobada":
+            var arrayReservasAprobadas = getReservadas("aprobada");
+            reservasAprobadas = cargarOfertasReservadas(arrayReservasAprobadas);
+            break;
+        case "pendiente":
+            var arrayReservasPendientes = getReservadas("pendiente");
+            reservasPendientes = cargarOfertasReservadas(arrayReservasPendientes);
+            break;
+        case "desaprobada":
+            var arrayReservasRechazadas = getReservadas("desaprobada");
+            reservasRechazadas = cargarOfertasReservadas(arrayReservasRechazadas);
+            break;
+        case "todas":
+            var arrayReservas = getReservadas("todas");
+            todasLasReservas = cargarOfertasReservadas(arrayReservas);
+            break;
+        default:
+    }
+
+    $("#mainDiv").html(construirSelectDeFiltro() + reservasAprobadas + reservasPendientes + reservasRechazadas + todasLasReservas);
+    $("#selectModoDeFiltro").val(selectorVal);
+    $("#selectModoDeFiltro").change(updateReservasReg);
+}
+
+
+function construirSelectDeFiltro() {
+    var selectModoDeFiltro = "";
+
+    selectModoDeFiltro += '<select id="selectModoDeFiltro">'; // puede ser pendiente, aprobada, desaprobada, todas
+    selectModoDeFiltro += '<option value="todas">Todas</option>';
+    selectModoDeFiltro += '<option value="aprobada">Aprobadas</option>';
+    selectModoDeFiltro += '<option value="pendiente">Pendientes</option>';
+    selectModoDeFiltro += '<option value="desaprobada">Rechazadas</option>';
+    selectModoDeFiltro += '</select>';
+
+    return selectModoDeFiltro;
+}
+
+function cargarOfertasReservadas(pArrayOfertas) {
+    var txtOfertas = "<div class='contenedorReservadas'>";
+    for (var i = 0; i < pArrayOfertas.length; i++) {
+        txtOfertas += "<div class='oferta'>";
+        txtOfertas += "<div class='imagenOferta'>";
+        txtOfertas += "<img style='width:100px; height:100px;' src='" + pArrayOfertas[i].imageUrl + "' >";
+        txtOfertas += "</div>";
+
+        txtOfertas += "<div class='ofertaInfo'>";
+        txtOfertas += "<h4>" + pArrayOfertas[i].displayName + "<h4>";
+        txtOfertas += "<p>Tipo: " + pArrayOfertas[i].housingType + "<p>";
+        txtOfertas += "<p>Dirección: " + pArrayOfertas[i].geoLocation + "<p>";
+
+        var botonVerOferta = '<br><button onclick="verOferta(this)" data-offerid="' + pArrayOfertas[i].id + '">Ver oferta</button>';
+        txtOfertas += botonVerOferta;
+        txtOfertas += "</div>";
+        txtOfertas += "</div>";
+    }
+
+    txtOfertas += "</div>";
+
+    return txtOfertas;
+}
+
+function getReservadas(pStatus) {
+    // creamos un array donde guardaremos los objetos ofertas reservadas del usuario actual
+    var arrayOfertasReservadas = new Array();
+    var userId = userNav.id;
+
+    for (var i = 0; i < reservasPreCargadas.length; i++) {
+        // encontramos las reservas hechas por el usuario
+        if (reservasPreCargadas[i].userId === userId) {
+            if (pStatus === "todas") {
+                // guardamos todas las ofertas reservadas por el usuario
+                var offerIndexPos = getArrayIndexFromId(reservasPreCargadas[i].offerId, ofertasPreCargadas);
+                arrayOfertasReservadas.push(ofertasPreCargadas[offerIndexPos]);
+            } else {
+                if (reservasPreCargadas[i].status === pStatus) {
+                    // solo guardamos las ofertas cuya reserva esta en un status igual a pStatus
+                    var offerIndexPos = getArrayIndexFromId(reservasPreCargadas[i].offerId, ofertasPreCargadas);
+                    arrayOfertasReservadas.push(ofertasPreCargadas[offerIndexPos]);
+                }
+
+            }
+        }
+    }
+    // devolvemos el array con objetos de ofertas reservadas
+    return arrayOfertasReservadas;
 }
 
 
@@ -917,6 +1034,6 @@ function updateUserDataClicked(){
 
 
 
-// ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-// AUTO ADMINISTRACION DE DATOS
-//=============================
+// ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+// iNFO DE RESERVAS PARA USUARIO
+//==============================

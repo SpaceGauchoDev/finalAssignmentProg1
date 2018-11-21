@@ -25,7 +25,7 @@ function inicialSetUp() {
     construirYAgregarReservasPreCargadas(65, 85); 
                                                  
     mostrarTop5();
-    construirUsuarioParaNavegacion(0, "favoritos");
+    construirUsuarioParaNavegacion(2, "reservasReg");
     updateDisplay('full');
 }
 
@@ -87,6 +87,7 @@ function updateDisplay(pString) {
                 break;
             case "reservasReg":
                 console.log("display: reservasReg");
+                construirReservasReg();
                 break;
             case "administracion":
                 console.log("display: administracion");
@@ -435,11 +436,6 @@ function rechazarReservaClicked(rechazarBtn) {
 
     updateDisplay('full');
 }
-
-
-
-
-
 // ^^^^^^^^^^^^^^^^^^^^^^
 // RESERVAS ADMIN MODE
 // ======================
