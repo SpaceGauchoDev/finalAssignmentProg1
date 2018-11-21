@@ -25,7 +25,7 @@ function inicialSetUp() {
     construirYAgregarReservasPreCargadas(65, 85); 
                                                  
     mostrarTop5();
-    construirUsuarioParaNavegacion(0, "ofertasAdmin");
+    construirUsuarioParaNavegacion(2, "estadoDeCuenta");
     updateDisplay('full');
 }
 
@@ -84,7 +84,7 @@ function updateDisplay(pString) {
                 break;
             case "estadoDeCuenta":
                 console.log("display: estadoDeCuenta");
-				construirEstadoCuenta();
+                construirEstadoCuenta();
                 break;
             case "reservasReg":
                 console.log("display: reservasReg");
@@ -1089,42 +1089,58 @@ function buildHtmlOfferFullSize(pOferta) {
 
 
 
-
+// ================
 // ESTADO DE CUENTA
-
+// vvvvvvvvvvvvvvvv
 function construirEstadoCuenta() {
-    console.log("construirEstadoCuenta");
-    var todasLasReservas = "";
+    console.log("Usuario registrado trata de ver su estado de cuenta");
+    var arrayDeReservasAprobadas = getReservasDeUsuarioActual("aprobada");
+    
+    var totalesAcumulados = 0;
+    
+    var title = "<h1>Estado De Cuenta</h1>";
+    var tableStart = "<table><tr><th>Nombre De Oferta</th><th>Inicio De Reserva</th><th>Fin De Reserva</th><th>ID de reserva</th><th>Precio</th></tr>";
+    var tableBody = "";
 
-    var arrayReservas = getReservadas("habilitada");
-	console.log(arrayReservas);
-    todasLasReservas = listadoReservas(arrayReservas);
-	
-    $("#mainDiv").html(todasLasReservas);
-    $("#selectModoDeFiltro").change(updateReservasReg);
-}
-
-function listadoReservas(pArrayOfertas) {
-	console.log("listadoReservas");
-    var txtOfertas = "<div class='contenedorReservadas'>";
-    for (var i = 0; i < pArrayOfertas.length; i++) {
-        txtOfertas += "<div class='oferta'>";
-        txtOfertas += "<div class='imagenOferta'>";
-        txtOfertas += "<img style='width:100px; height:100px;' src='" + pArrayOfertas[i].imageUrl + "' >";
-        txtOfertas += "</div>";
-
-        txtOfertas += "<div class='ofertaInfo'>";
-        txtOfertas += "<h4>" + pArrayOfertas[i].displayName + "<h4>";
-        txtOfertas += "<p>Tipo: " + pArrayOfertas[i].housingType + "<p>";
-        txtOfertas += "<p>Dirección: " + pArrayOfertas[i].geoLocation + "<p>";
-
-        var botonVerOferta = '<br><button onclick="verOferta(this)" data-offerid="' + pArrayOfertas[i].id + '">Ver oferta</button>';
-        txtOfertas += botonVerOferta;
-        txtOfertas += "</div>";
-        txtOfertas += "</div>";
+    for (var i = 0; i < arrayDeReservasAprobadas.length; i++) {
+        tableBody += "<tr>";
+        tableBody += "<td>" + "nombreDeOferta" + "</td>";
+        tableBody += "<td>" + arrayDeReservasAprobadas[i].startDate.toDateString() + "</td>";
+        tableBody += "<td>" + arrayDeReservasAprobadas[i].endDate.toDateString() + "</td>";
+        tableBody += "<td>" + arrayDeReservasAprobadas[i].id + "</td>";
+        tableBody += "<td>" + arrayDeReservasAprobadas[i].totalPrice + "</td>";
+        tableBody += "</tr>";
+        totalesAcumulados += arrayDeReservasAprobadas[i].totalPrice;
     }
-
-    txtOfertas += "</div>";
-
-    return txtOfertas;
+    
+    var tableEnd = '<tr><td></td><td></td><td></td><td>Total: </td><td>'+totalesAcumulados+'</td>';
+    
+    var fullHtml = '<div id="divEstadoDeCuenta">' + title + tableStart + tableBody + tableEnd + '</div>';
+    $("#mainDiv").html(fullHtml);
 }
+
+function getReservasDeUsuarioActual(pStatus) {
+    // creamos un array donde guardaremos los objetos reservas del usuario actual
+    var arrayDeReservas = new Array();
+    var userId = userNav.id;
+    for (var i = 0; i < reservasPreCargadas.length; i++) {
+        // encontramos las reservas hechas por el usuario
+        if (reservasPreCargadas[i].userId === userId) {
+            if (pStatus === "todas") {
+                // guardamos todas las reservas por el usuario                
+                arrayDeReservas.push(reservasPreCargadas[i]);
+            } else {
+                if (reservasPreCargadas[i].status === pStatus) {
+                // solo guardamos las reservas del usuario cuyo status coincida con pStatus
+                arrayDeReservas.push(reservasPreCargadas[i]);
+                }
+            }
+        }
+    }
+    // devolvemos el array con objetos reservas
+    return arrayDeReservas;
+}
+
+// ^^^^^^^^^^^^^^^^
+// ESTADO DE CUENTA
+// ================
