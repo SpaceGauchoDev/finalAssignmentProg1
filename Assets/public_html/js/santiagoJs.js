@@ -156,6 +156,7 @@ function cargarDestacados() {
 
 
 
+
 function sortDestacados(arr) {
     arr.sort(sortOfers);
     return arr;

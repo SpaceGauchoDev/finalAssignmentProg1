@@ -84,6 +84,7 @@ function updateDisplay(pString) {
                 break;
             case "estadoDeCuenta":
                 console.log("display: estadoDeCuenta");
+				construirEstadoCuenta();
                 break;
             case "reservasReg":
                 console.log("display: reservasReg");
@@ -1084,4 +1085,46 @@ function buildHtmlOfferFullSize(pOferta) {
 
     var offerFullSize = "<div class='oferta'><table class='offerFullSize'><tr><td>" + col_1 + "</td><td>" + col_2 + "</td></tr><tr><td colspan=2>" + col_3 + "</td></tr></table></div>";
     return offerFullSize;
+}
+
+
+
+
+// ESTADO DE CUENTA
+
+function construirEstadoCuenta() {
+    console.log("construirEstadoCuenta");
+    var todasLasReservas = "";
+
+    var arrayReservas = getReservadas("habilitada");
+	console.log(arrayReservas);
+    todasLasReservas = listadoReservas(arrayReservas);
+	
+    $("#mainDiv").html(todasLasReservas);
+    $("#selectModoDeFiltro").change(updateReservasReg);
+}
+
+function listadoReservas(pArrayOfertas) {
+	console.log("listadoReservas");
+    var txtOfertas = "<div class='contenedorReservadas'>";
+    for (var i = 0; i < pArrayOfertas.length; i++) {
+        txtOfertas += "<div class='oferta'>";
+        txtOfertas += "<div class='imagenOferta'>";
+        txtOfertas += "<img style='width:100px; height:100px;' src='" + pArrayOfertas[i].imageUrl + "' >";
+        txtOfertas += "</div>";
+
+        txtOfertas += "<div class='ofertaInfo'>";
+        txtOfertas += "<h4>" + pArrayOfertas[i].displayName + "<h4>";
+        txtOfertas += "<p>Tipo: " + pArrayOfertas[i].housingType + "<p>";
+        txtOfertas += "<p>Dirección: " + pArrayOfertas[i].geoLocation + "<p>";
+
+        var botonVerOferta = '<br><button onclick="verOferta(this)" data-offerid="' + pArrayOfertas[i].id + '">Ver oferta</button>';
+        txtOfertas += botonVerOferta;
+        txtOfertas += "</div>";
+        txtOfertas += "</div>";
+    }
+
+    txtOfertas += "</div>";
+
+    return txtOfertas;
 }

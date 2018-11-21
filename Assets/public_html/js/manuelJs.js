@@ -1007,12 +1007,16 @@ function cargarOfertasReservadas(pArrayOfertas) {
 
 
 function getReservadas(pStatus) {
+	console.log(getReservadas);
+	console.log(userNav);
     // creamos un array donde guardaremos los objetos ofertas reservadas del usuario actual
     var arrayOfertasReservadas = new Array();
     var userId = userNav.id;
 
     for (var i = 0; i < reservasPreCargadas.length; i++) {
         // encontramos las reservas hechas por el usuario
+		console.log("USU ID: ");
+		console.log(reservasPreCargadas[i].userId);
         if (reservasPreCargadas[i].userId === userId) {
             if (pStatus === "todas") {
                 // guardamos todas las ofertas reservadas por el usuario
@@ -1028,6 +1032,8 @@ function getReservadas(pStatus) {
             }
         }
     }
+	console.log("arrayOfertasReservadas");
+	console.log(arrayOfertasReservadas);
     // devolvemos el array con objetos de ofertas reservadas
     return arrayOfertasReservadas;
 }
@@ -1165,3 +1171,6 @@ function getOfertasParaHabilitacion(pStatus) {
 // ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 // ADMINISTRACION DE ESTADO DE OFERTAS 
 //====================================
+
+
+
