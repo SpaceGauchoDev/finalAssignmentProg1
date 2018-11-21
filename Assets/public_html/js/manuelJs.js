@@ -1002,6 +1002,10 @@ function cargarOfertasReservadas(pArrayOfertas) {
     return txtOfertas;
 }
 
+
+
+
+
 function getReservadas(pStatus) {
     // creamos un array donde guardaremos los objetos ofertas reservadas del usuario actual
     var arrayOfertasReservadas = new Array();
@@ -1028,12 +1032,136 @@ function getReservadas(pStatus) {
     return arrayOfertasReservadas;
 }
 
-
-
-
-
-
-
 // ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 // iNFO DE RESERVAS PARA USUARIO
 //==============================
+
+
+//====================================
+// ADMINISTRACION DE ESTADO DE OFERTAS 
+//VVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVV
+function construirAdministracionDeEstadoDeOfertas() {
+    // este array contiene OFERTAS para las cuales la reserva esta en estado pendiente, aprobada, o rechazada
+    var todasLasOfertas = "";
+
+    var arrayOfertas = getOfertasParaHabilitacion("todas");
+    todasLasOfertas = cargarOfertasParaHabilitacion(arrayOfertas);
+
+    $("#mainDiv").html(selectHabilitadasDeshabilitadas() +  todasLasOfertas);
+    $("#selectHabDes").change(updateOfertasAdmin);
+}
+
+function selectHabilitadasDeshabilitadas() {
+    var selectModoDeFiltro = "";
+
+    selectModoDeFiltro += '<select id="selectHabDes">'; // puede ser pendiente, aprobada, desaprobada, todas
+    selectModoDeFiltro += '<option value="todas">Todas</option>';
+    selectModoDeFiltro += '<option value="habilitada">Habilitadas</option>';
+    selectModoDeFiltro += '<option value="deshabilitada">Deshabilitadas</option>';
+    selectModoDeFiltro += '</select>';
+
+    return selectModoDeFiltro;
+}
+
+function updateOfertasAdmin(){
+    var selectorVal = $("#selectHabDes").val();
+
+    var ofertasHabilitadas = "";
+    var ofertasDeshabilitadas = "";
+    var todasLasOfertas = "";
+
+    switch (selectorVal) {
+        case "habilitada":
+            var arrayOfertasHabilitadas = getOfertasParaHabilitacion(true);
+            ofertasHabilitadas = cargarOfertasParaHabilitacion(arrayOfertasHabilitadas);
+            break;
+        case "deshabilitada":
+            var arrayReservasDeshabilitadas = getOfertasParaHabilitacion(false);
+            ofertasDeshabilitadas = cargarOfertasParaHabilitacion(arrayReservasDeshabilitadas);
+            break;
+        case "todas":
+            var arrayOfertas = getOfertasParaHabilitacion("todas");
+            todasLasOfertas = cargarOfertasParaHabilitacion(arrayOfertas);
+            break;
+        default:
+    }
+
+    $("#mainDiv").html(selectHabilitadasDeshabilitadas() + ofertasHabilitadas + ofertasDeshabilitadas + todasLasOfertas);
+    $("#selectHabDes").val(selectorVal);
+    $("#selectHabDes").change(updateOfertasAdmin);
+}
+
+
+function cargarOfertasParaHabilitacion(pArrayOfertas) {
+    var txtOfertas = "<div class='contenedorOfertasParaHabilitar'>";
+    for (var i = 0; i < pArrayOfertas.length; i++) {
+        txtOfertas += "<div class='oferta'>";
+        txtOfertas += "<div class='imagenOferta'>";
+        txtOfertas += "<img style='width:100px; height:100px;' src='" + pArrayOfertas[i].imageUrl + "' >";
+        txtOfertas += "</div>";
+
+        txtOfertas += "<div class='ofertaInfo'>";
+        txtOfertas += "<h4>" + pArrayOfertas[i].displayName + "<h4>";
+        txtOfertas += "<p>Tipo: " + pArrayOfertas[i].housingType + "<p>";
+        txtOfertas += "<p>Dirección: " + pArrayOfertas[i].geoLocation + "<p>";
+
+        var botonHabilitar = '';
+        if(pArrayOfertas[i].active === false){
+            botonHabilitar = '<br><button onclick="habilitarOfertaClicked(this)" data-offerid="' + pArrayOfertas[i].id + '">Habilitar Oferta</button>';
+        }
+        
+        var botonDeshabilitar = '';
+        if(pArrayOfertas[i].active === true){
+            botonDeshabilitar = '<br><button onclick="desabilitarOfertaClicked(this)" data-offerid="' + pArrayOfertas[i].id + '">Deshabilitar Oferta</button>';
+        }
+
+        txtOfertas += botonHabilitar + botonDeshabilitar;
+        txtOfertas += "</div>";
+        txtOfertas += "</div>";
+    }
+
+    txtOfertas += "</div>";
+    return txtOfertas;
+}
+
+function habilitarOfertaClicked(btn) {
+    var offerId = parseInt(btn.getAttribute("data-offerid"));
+    console.log('usuario habilita oferta: ' + offerId);
+    var offerIndex = getArrayIndexFromId(offerId, ofertasPreCargadas);
+    ofertasPreCargadas[offerIndex].active = true;
+    updateOfertasAdmin();
+}
+
+function desabilitarOfertaClicked(btn) {
+    var offerId = parseInt(btn.getAttribute("data-offerid"));
+    console.log('usuario deshabilita oferta: ' + offerId);
+    var offerIndex = getArrayIndexFromId(offerId, ofertasPreCargadas);
+    ofertasPreCargadas[offerIndex].active = false;
+    updateOfertasAdmin();
+}
+
+
+function getOfertasParaHabilitacion(pStatus) {
+    // creamos un array donde guardaremos los objetos ofertas reservadas del usuario actual
+    var arrayOfertas = new Array();
+
+    for (var i = 0; i < ofertasPreCargadas.length; i++) {
+        if (pStatus === "todas") {
+            // guardamos todas las ofertas
+            arrayOfertas.push(ofertasPreCargadas[i]);
+        } else {
+            if (ofertasPreCargadas[i].active === pStatus) {
+                // solo guardamos las ofertas cuya active sea igual a pStatus
+                arrayOfertas.push(ofertasPreCargadas[i]);
+            }
+        }
+    }
+    // devolvemos el array con objetos de ofertas reservadas
+    return arrayOfertas;
+}
+
+
+
+// ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+// ADMINISTRACION DE ESTADO DE OFERTAS 
+//====================================

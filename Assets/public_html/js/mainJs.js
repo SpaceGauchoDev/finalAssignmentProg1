@@ -25,7 +25,7 @@ function inicialSetUp() {
     construirYAgregarReservasPreCargadas(65, 85); 
                                                  
     mostrarTop5();
-    construirUsuarioParaNavegacion(2, "reservasReg");
+    construirUsuarioParaNavegacion(0, "ofertasAdmin");
     updateDisplay('full');
 }
 
@@ -36,7 +36,7 @@ function construirUsuarioParaNavegacion(pSetting, pMode) {
             userNav = {
                 type: "noReg", // puede ser: "noReg", "regUser", "admin"
                 currentMode: "ofertas", // para regUser puede ser: "ofertas", "favoritos", "estadoDeCuenta", "reservasReg", "administracion"
-                // para admin puede ser: "ofertas", "editarOfertas", "solicitudesUsuario", "reservasAdmin", "stats", "administracion", "ordenDestacados"
+                // para admin puede ser: "ofertas", "editarOfertas", "solicitudesUsuario", "reservasAdmin", "stats", "administracion", "ordenDestacados", "ofertasAdmin"
                 // para noReg puede ser: "ofertas", "login"
                 id: -1 // -1 es el id de usuarios no registrados
             };
@@ -113,6 +113,11 @@ function updateDisplay(pString) {
                 //construirNavBar();
                 construirReservasAdminMode();
                 break;
+            case "ofertasAdmin":
+                console.log("display: ofertasAdmin");
+                //construirNavBar();
+                construirAdministracionDeEstadoDeOfertas(); // habilitada, deshabilitada
+                break;                                
             case "stats":
                 console.log("display: stats");
                 break;
@@ -272,6 +277,7 @@ function construirNavBar() {
             htmlSelector += '<option value="ordenDestacados">Editar orden de destacados</option>';
             htmlSelector += '<option value="solicitudesUsuario">Solicitudes de usuario</option>';
             htmlSelector += '<option value="reservasAdmin">Confirmar reservas</option>';
+            htmlSelector += '<option value="ofertasAdmin">Confirmar ofertas</option>';
             htmlSelector += '<option value="stats">Estadisticas</option>';
             htmlSelector += '<option value="administracion">Administracion</option>';
         }
