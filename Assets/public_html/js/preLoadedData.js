@@ -5,7 +5,7 @@ function construirYAgregarOfertasPreCargadas() {
     // de oferta 1 a 10 son todas HOTELES destacadas, algunas estan habilitadas y otras no
     var startEndAddedDates1 = randomStartEndAddedDates(5, 18, 5); // pMaxStartDelay, pMaxDifference, pMaxDaysSinceItWasAdded
     var oferta1 = {
-        id: nuevoIdUnico(ofertasPreCargadas), // id único generado para cada oferta
+        id: 1, // id único generado para cada oferta
         featured: 0, // -1 no esta destacado, numero positivo el orden en la lista de destacados       
         active: true, // verdadero la oferta está visible en la página actualmente
         timesBooked: 0, // cantidad de veces reservada
@@ -598,15 +598,15 @@ function desaprobadaPendienteAprobada(){
     
     var randomNumber = Math.floor(Math.random() * (max - min)) + min;
     
-    if(randomNumber > 0 && randomNumber <= 100 ){
+    if(randomNumber > 0 && randomNumber <= 50 ){
         result = "pendiente";
     }
 
-    if(randomNumber > 100 && randomNumber <= 200 ){
+    if(randomNumber > 50 && randomNumber <= 250 ){
         result = "aprobada";
     }
     
-    if(randomNumber > 200 && randomNumber <= 300 ){
+    if(randomNumber > 250 && randomNumber <= 300 ){
         result = "desaprobada";
     }
     

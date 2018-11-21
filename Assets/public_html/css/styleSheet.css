@@ -144,7 +144,6 @@ p {
     width: 100%; /* Full width */
 }
 
-
 #mainDiv{    
     margin-top: 20px; 
     margin-left: 20px;
@@ -161,7 +160,6 @@ table, th, td {
 */
 
 .oferta{
-	
 	border: 1px solid #eeeeee;
 	margin: 5px;
 	min-height: 110px;

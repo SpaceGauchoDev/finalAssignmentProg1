@@ -22,10 +22,10 @@ function inicialSetUp() {
     construirYAgregarOfertasPreCargadas();
     // el primer parametro es la probabilidad de reserva que tiene cada usuario pre cargado, -1 para ninguna reserva autogenerada
     // el segundo parametro es la probabilidad de favoriteo para ofertas no reservadas que tiene cada usuario pre cargado, -1 para ninguna favorito autogenerado
-    construirYAgregarReservasPreCargadas(65, 85); 
-                                                 
+    construirYAgregarReservasPreCargadas(80, 60);
+
     mostrarTop5();
-    construirUsuarioParaNavegacion(2, "estadoDeCuenta");
+    construirUsuarioParaNavegacion(1, "stats");
     updateDisplay('full');
 }
 
@@ -118,9 +118,11 @@ function updateDisplay(pString) {
                 console.log("display: ofertasAdmin");
                 //construirNavBar();
                 construirAdministracionDeEstadoDeOfertas(); // habilitada, deshabilitada
-                break;                                
+                break;
             case "stats":
                 console.log("display: stats");
+                construirEstadisticas();
+
                 break;
             default :
                 console.log("currentMode para updateDisplay incorrecto");
@@ -675,15 +677,15 @@ function registerClicked() {
     // verificamos de la fecha de nacimiento
     inputEdad = myTrim(inputEdad);
     if (notEmptyString(inputEdad)) {
-        if(isNumber(inputEdad)){
+        if (isNumber(inputEdad)) {
             inputEdad = makeInt(inputEdad);
-            if(inputEdad >= 0 && inputEdad<130){
+            if (inputEdad >= 0 && inputEdad < 130) {
                 //EXITO
                 validationSuccess++;
-            }else{
-                 msgD = "Edad, la edad solo puede ser un valor entre 0 y 130.";
-            }            
-        }else{
+            } else {
+                msgD = "Edad, la edad solo puede ser un valor entre 0 y 130.";
+            }
+        } else {
             msgD = "Edad, la edad solo puede ser numerica.";
         }
     } else {
@@ -766,36 +768,36 @@ function favoritoClicked(favoritoBtn) {
     }
 }
 
-function removeExpiredOffersFromUserFavoritedList(pUserId){
+function removeExpiredOffersFromUserFavoritedList(pUserId) {
     var userIndexPos = getArrayIndexFromId(pUserId, usuariosPreCargados);
     var oldUserFavoritedArray = usuariosPreCargados[userIndexPos].favorited;
     var newUserFavoritedArray = new Array();
     var currentDate = new Date();
-    
-    for (var i =0; i< oldUserFavoritedArray.length; i++){
+
+    for (var i = 0; i < oldUserFavoritedArray.length; i++) {
         //checkeo si las ofertas en el array de favoritos viejos, no estan expiradas
         var offerIndexPos = getArrayIndexFromId(oldUserFavoritedArray[i], ofertasPreCargadas);
         var offerEndDate = ofertasPreCargadas[offerIndexPos].endDate;
-        if(currentDate < offerEndDate){
+        if (currentDate < offerEndDate) {
             newUserFavoritedArray.push(oldUserFavoritedArray[i]);
-        }else{
+        } else {
             console.log("oferta retirada por expirada");
         }
-    }   
-    usuariosPreCargados[userIndexPos].favorited = newUserFavoritedArray;   
+    }
+    usuariosPreCargados[userIndexPos].favorited = newUserFavoritedArray;
 }
 
-function removeFromUserFavoritesList(pUserId, pOfferId){
+function removeFromUserFavoritesList(pUserId, pOfferId) {
     var userIndexPos = getArrayIndexFromId(pUserId, usuariosPreCargados);
     var oldUserFavoritedArray = usuariosPreCargados[userIndexPos].favorited;
     var newUserFavoritedArray = new Array();
-    
-    for (var i =0; i< oldUserFavoritedArray.length; i++){
-        if(oldUserFavoritedArray[i] !== pOfferId){
+
+    for (var i = 0; i < oldUserFavoritedArray.length; i++) {
+        if (oldUserFavoritedArray[i] !== pOfferId) {
             newUserFavoritedArray.push(oldUserFavoritedArray[i]);
-        } 
+        }
     }
-    
+
     usuariosPreCargados[userIndexPos].favorited = newUserFavoritedArray;
 }
 
@@ -833,7 +835,7 @@ function addToUserFavoritesList(pUserId, pOfferId) {
 }
 
 
-function construirVerFavoritas(){
+function construirVerFavoritas() {
     removeExpiredOffersFromUserFavoritedList(userNav.id);
     var ofertasFavoritas = cargarFavoritas();
     $("#mainDiv").html(ofertasFavoritas);
@@ -841,7 +843,7 @@ function construirVerFavoritas(){
 
 function cargarFavoritas() {
     var arrayFavoritas = getFavoritas();
-    
+
     var txtOfertas = "<h3>Favoritas<h3><div class='contenedorFavoritas'>";
     $.each(arrayFavoritas, function (index, value) {
         txtOfertas += "<div class='oferta'>";
@@ -853,14 +855,14 @@ function cargarFavoritas() {
         txtOfertas += "<h4>" + value.displayName + "<h4>";
         txtOfertas += "<p>Tipo: " + value.housingType + "<p>";
         txtOfertas += "<p>Dirección: " + value.geoLocation + "<p>";
-        
+
         // muestra el boton de favorito si el usuario no es administrador, puede ser un checkeo redundante
         // ya que administrador y usuarios no registrados no pueden acceder a este modo 
         var botonDesFavoritear = "";
-        if(userNav.type !== 'admin'){
+        if (userNav.type !== 'admin') {
             botonDesFavoritear = '<br><button onclick="unFavoriteClicked(this)" data-offerid="' + value.id + '">Quitar De Favoritos</button>';
         }
-    
+
         var botonVerOferta = '<br><button onclick="verOferta(this)" data-offerid="' + value.id + '">Ver oferta</button>';
         txtOfertas += botonDesFavoritear + botonVerOferta;
         txtOfertas += "</div>";
@@ -870,22 +872,22 @@ function cargarFavoritas() {
     return txtOfertas;
 }
 
-function getFavoritas(){
+function getFavoritas() {
     // creamos un array donde guardaremos los objetos ofertas favoritas del usuario actual
     var arrayOfertasFavoritas = new Array();
-    
+
     // consegimos el index pos del usuario actual en el array de usuarios
-    var userIndexPos  = getArrayIndexFromId(userNav.id, usuariosPreCargados);
-    
+    var userIndexPos = getArrayIndexFromId(userNav.id, usuariosPreCargados);
+
     // consegimos su array de ids de ofertas favoriteadas
     var userFavoritedOfferIdArray = usuariosPreCargados[userIndexPos].favorited;
-    
+
     // recorremos todos los ids de ofertas favoriteadas para agregarlas al array de ofertas favoritas
-    for (i = 0; i<userFavoritedOfferIdArray.length; i++){
+    for (i = 0; i < userFavoritedOfferIdArray.length; i++) {
         var ofertaIndexPos = getArrayIndexFromId(userFavoritedOfferIdArray[i], ofertasPreCargadas);
         arrayOfertasFavoritas.push(ofertasPreCargadas[ofertaIndexPos]);
     }
-    
+
     // devolvemos el array con objetos de ofertas favoritas
     return arrayOfertasFavoritas;
 }
@@ -1016,13 +1018,13 @@ function cargarNoDestacados() {
         txtOfertas += "<p>Tipo: " + value.housingType + "<p>";
         txtOfertas += "<p>Dirección: " + value.geoLocation + "<p>";
         // muestra el id de oferta si el usuario es administrador para ayudar a buscar editar ofertas especificas
-        if(userNav.type === 'admin'){
+        if (userNav.type === 'admin') {
             txtOfertas += "<p>ID: " + value.id + "<p>";
         }
-        
+
         // muestra el boton de favorito si el usuario no es administrador
         var botonFavoritear = "";
-        if(userNav.type !== 'admin'){
+        if (userNav.type !== 'admin') {
             botonFavoritear = '<br><button onclick="favoritoClicked(this)" data-offerid="' + value.id + '">Favorito</button>';
         }
         var botonVerOferta = '<br><button onclick="verOferta(this)" data-offerid="' + value.id + '">Ver oferta</button>';
@@ -1095,16 +1097,19 @@ function buildHtmlOfferFullSize(pOferta) {
 function construirEstadoCuenta() {
     console.log("Usuario registrado trata de ver su estado de cuenta");
     var arrayDeReservasAprobadas = getReservasDeUsuarioActual("aprobada");
-    
+
     var totalesAcumulados = 0;
-    
+
     var title = "<h1>Estado De Cuenta</h1>";
     var tableStart = "<table><tr><th>Nombre De Oferta</th><th>Inicio De Reserva</th><th>Fin De Reserva</th><th>ID de reserva</th><th>Precio</th></tr>";
     var tableBody = "";
 
     for (var i = 0; i < arrayDeReservasAprobadas.length; i++) {
+        var ofertaIndexPos = getArrayIndexFromId(arrayDeReservasAprobadas[i].offerId, ofertasPreCargadas);
+        var nombreDeOferta = ofertasPreCargadas[ofertaIndexPos].displayName;
+
         tableBody += "<tr>";
-        tableBody += "<td>" + "nombreDeOferta" + "</td>";
+        tableBody += "<td>" + nombreDeOferta + "</td>";
         tableBody += "<td>" + arrayDeReservasAprobadas[i].startDate.toDateString() + "</td>";
         tableBody += "<td>" + arrayDeReservasAprobadas[i].endDate.toDateString() + "</td>";
         tableBody += "<td>" + arrayDeReservasAprobadas[i].id + "</td>";
@@ -1112,9 +1117,9 @@ function construirEstadoCuenta() {
         tableBody += "</tr>";
         totalesAcumulados += arrayDeReservasAprobadas[i].totalPrice;
     }
-    
-    var tableEnd = '<tr><td></td><td></td><td></td><td>Total: </td><td>'+totalesAcumulados+'</td>';
-    
+
+    var tableEnd = '<tr><td></td><td></td><td></td><td>Total: </td><td>' + totalesAcumulados + '</td></tr></table>';
+
     var fullHtml = '<div id="divEstadoDeCuenta">' + title + tableStart + tableBody + tableEnd + '</div>';
     $("#mainDiv").html(fullHtml);
 }
@@ -1131,8 +1136,8 @@ function getReservasDeUsuarioActual(pStatus) {
                 arrayDeReservas.push(reservasPreCargadas[i]);
             } else {
                 if (reservasPreCargadas[i].status === pStatus) {
-                // solo guardamos las reservas del usuario cuyo status coincida con pStatus
-                arrayDeReservas.push(reservasPreCargadas[i]);
+                    // solo guardamos las reservas del usuario cuyo status coincida con pStatus
+                    arrayDeReservas.push(reservasPreCargadas[i]);
                 }
             }
         }
@@ -1143,4 +1148,175 @@ function getReservasDeUsuarioActual(pStatus) {
 
 // ^^^^^^^^^^^^^^^^
 // ESTADO DE CUENTA
+// ================
+
+
+// ================
+// ESTADISTICAS
+// vvvvvvvvvvvvvvvv
+function construirEstadisticas() {
+    console.log("Usuario administrador trata de ver estadisticas");
+    var estadisticasGeneralesHTML = estadisticasGenerales();
+
+
+    var fullHtml = '<div id="divEstadisticas"><div id="divGenerales">' + estadisticasGeneralesHTML + '</div> <div id="divParticulares"></div></div>';
+
+    $("#mainDiv").html(fullHtml);
+    estadisticasParticulares(-1);
+}
+
+function estadisticasGenerales() {
+    var titleGen = "<h3>Estadisticas Generales</h3>";
+
+    var tableStartGen = "<table><tr><th>Estado De Reserva</th><th>Cantidad De Reservas</th><th>Monto Total</th></tr>";
+
+    var cantidadReservasAprobadas = 0;
+    var cantidadReservasPendientes = 0;
+    var cantidadReservasDesaprobadas = 0;
+
+    for (var i = 0; i < reservasPreCargadas.length; i++) {
+        switch (reservasPreCargadas[i].status) {
+            case "aprobada":
+                cantidadReservasAprobadas++;
+                break;
+            case "pendiente":
+                cantidadReservasPendientes++;
+                break;
+            case "desaprobada":
+                cantidadReservasDesaprobadas++;
+                break;
+            default :
+                console.log("error en primer switch de construirEstadisticas()");
+        }
+    }
+
+    var montoTotalReservasAprobadas = 0;
+    var montoTotalReservasPendientes = 0;
+    var montoTotalReservasDesaprobadas = 0;
+
+    for (var i = 0; i < reservasPreCargadas.length; i++) {
+        switch (reservasPreCargadas[i].status) {
+            case "aprobada":
+                montoTotalReservasAprobadas += reservasPreCargadas[i].totalPrice;
+                break;
+            case "pendiente":
+                montoTotalReservasPendientes += reservasPreCargadas[i].totalPrice;
+                break;
+            case "desaprobada":
+                montoTotalReservasDesaprobadas += reservasPreCargadas[i].totalPrice;
+                break;
+            default :
+                console.log("error en segundo switch de construirEstadisticas()");
+        }
+    }
+
+    var filaAprobadas = '<tr><td>Aprobadas</td><td>' + cantidadReservasAprobadas + '</td><td>' + montoTotalReservasAprobadas + '</td></tr>';
+    var filaPendientes = '<tr><td>Pendientes</td><td>' + cantidadReservasPendientes + '</td><td>' + montoTotalReservasPendientes + '</td></tr>';
+    var filaDesaprobadas = '<tr><td>Rechazadas</td><td>' + cantidadReservasDesaprobadas + '</td><td>' + montoTotalReservasDesaprobadas + '</td></tr>';
+
+    var fullHTML = titleGen + tableStartGen + filaAprobadas + filaPendientes + filaDesaprobadas + '</table>';
+
+    return fullHTML;
+}
+
+function estadisticasParticulares(pOfferId) {
+    var fullHTML = "";
+    var titlePart = "<h3>Estadisticas Particulares</h3>";
+
+    var buscarOfertaBtn = '<button onclick="buscarOfertaParaEstadisticasClicked()">Buscar Oferta</button><br>';
+    var buscarOfertaInput = '<label for="buscarOfertaStat" >Ingrese ID de oferta: </label><input id="buscarOfertaStat" type="text"/>' + "<br>";
+    ;
+    var tableStartPart = "<table><tr><th>ID de Usuario</th><th>Fecha</th></tr>";
+    var filas = "<tr><td>0</td><td>0</td></tr>";
+    var messageToUserP = '<div id="messageToUserStat"></div>';
+
+    if (pOfferId !== -1) {
+        var arrayDeReservasAprobadasPorOferta = getReservasPorOferta(pOfferId, "aprobada");
+        // sortArrayHere
+
+        arrayDeReservasAprobadasPorOferta.sort(function (a, b) {
+            a = new Date(a.startDate);
+            b = new Date(b.startDate);
+            return a > b ? 1 : a < b ? -1 : 0;
+        });
+
+
+        filas = "";
+        for (var i = 0; i < arrayDeReservasAprobadasPorOferta.length; i++) {
+            filas += '<tr><td>' + arrayDeReservasAprobadasPorOferta[i].userId + '</td><td>' + arrayDeReservasAprobadasPorOferta[i].startDate.toDateString() + '</td></tr>';
+        }
+    }
+
+    var tableEndPart = '</table>';
+    fullHTML = titlePart + buscarOfertaInput + buscarOfertaBtn + tableStartPart + filas + tableEndPart + messageToUserP;
+    $("#divParticulares").html(fullHTML);
+}
+
+function getReservasPorOferta(pOfferId, pStatus) {
+    // creamos un array donde guardaremos los objetos reservas del usuario actual
+    var arrayDeReservas = new Array();
+    for (var i = 0; i < reservasPreCargadas.length; i++) {
+        // encontramos las reservas hechas por el usuario
+        if (reservasPreCargadas[i].offerId === pOfferId) {
+            if (pStatus === "todas") {
+                // guardamos todas las reservas por el usuario
+                arrayDeReservas.push(reservasPreCargadas[i]);
+            } else {
+                if (reservasPreCargadas[i].status === pStatus) {
+                    // solo guardamos las reservas del usuario cuyo status coincida con pStatus
+                    arrayDeReservas.push(reservasPreCargadas[i]);
+                }
+            }
+        }
+    }
+    // devolvemos el array con objetos reservas
+    return arrayDeReservas;
+}
+
+
+function buscarOfertaParaEstadisticasClicked() {
+    var searchResult = validarBusquedaIDStats();
+    if (searchResult[0] === true) {
+        estadisticasParticulares(searchResult[2]);
+    } else {
+        estadisticasParticulares(-1);
+    }
+    $("#messageToUserStat").html('<p>' + searchResult[1] + '</p>');
+}
+
+function validarBusquedaIDStats() {
+    var ofertaIdInput = $("#buscarOfertaStat").val();
+    var result = false;
+    var msg = "";
+    if (notEmptyString(ofertaIdInput)) {
+        if (isNumber(ofertaIdInput)) {
+            ofertaIdInput = makeInt(ofertaIdInput);
+            if (ofertaIdInput > 0) {
+                var offerIndexPos = getArrayIndexFromId(ofertaIdInput, ofertasPreCargadas);
+                if (offerIndexPos === -1) {
+                    msg = "Busqueda sin exito, revise el id de oferta e intente nuevamente.";
+                    //console.log("Oferta no encontrada.");
+                } else {
+                    msg = "Busqueda exitosa, oferta encontrada.";
+                    result = true;
+                }
+            } else {
+                msg = "Busqueda sin exito, los id de oferta son valores numericos positivos.";
+                //console.log("Es un numero negativo.");
+            }
+        } else {
+            msg = "Busqueda sin exito, los id de oferta son valores numericos positivos.";
+            //console.log("No es un numero.");
+        }
+    } else {
+        msg = "Busqueda sin exito, el campo de id de oferta no puede estar vacío.";
+        //console.log("Esta vacio.");
+    }
+    var resultArray = new Array(result, msg, ofertaIdInput);
+
+    return resultArray;
+}
+
+// ^^^^^^^^^^^^^^^^
+// ESTADISTICAS
 // ================
