@@ -1,5 +1,4 @@
 
-
 function construirYAgregarOfertasPreCargadas() {
 	
     // de oferta 1 a 10 son todas HOTELES destacadas, algunas estan habilitadas y otras no
